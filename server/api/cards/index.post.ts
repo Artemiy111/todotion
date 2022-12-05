@@ -1,12 +1,12 @@
 import type { ZodError } from 'zod'
 import { CardModel } from '~/server/models/Card.model'
-import { CardCreate } from '~/server/validation'
+import { CardCreateSchema } from '~~/validation'
 
 export default defineEventHandler(async event => {
   const body = await readBody(event)
 
   try {
-    CardCreate.parse(body)
+    CardCreateSchema.parse(body)
   } catch (e) {
     return createError({
       message: JSON.stringify((e as ZodError).format()),

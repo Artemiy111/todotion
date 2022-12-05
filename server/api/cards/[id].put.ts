@@ -1,6 +1,6 @@
 import type { ZodError } from 'zod'
 import { CardModel } from '~/server/models/Card.model'
-import { CardUpdate } from '~/server/validation'
+import { CardUpdateSchema } from '~~/validation'
 
 export default defineEventHandler(async event => {
   const id: string = event.context.params.id
@@ -8,7 +8,7 @@ export default defineEventHandler(async event => {
   const body = await readBody(event)
 
   try {
-    CardUpdate.parse(body)
+    CardUpdateSchema.parse(body)
   } catch (e) {
     return createError({
       message: (e as ZodError).message,

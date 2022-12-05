@@ -1,23 +1,23 @@
 import { z } from 'zod'
 
-export const CardCreate = z.object({
+export const CardCreateSchema = z.object({
   title: z.string().optional(),
   order: z.number().int().min(1),
 })
 
-export const CardUpdate = z.object({
+export const CardUpdateSchema = z.object({
   title: z.string().optional(),
   order: z.number().int().min(1).optional(),
 })
 
-export const RowCreate = z.object({
+export const RowCreateSchema = z.object({
   text: z.string().optional(),
   isCompleted: z.boolean().optional(),
   order: z.number().int().min(1),
   card: z.string(),
 })
 
-export const RowUpdate = z.object({
+export const RowUpdateSchema = z.object({
   text: z.string().optional(),
   isCompleted: z.boolean().optional(),
   order: z.number().int().min(1).optional(),
