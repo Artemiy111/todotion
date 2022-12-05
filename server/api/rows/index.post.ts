@@ -9,7 +9,7 @@ export default defineEventHandler(async event => {
     RowCreate.parse(body)
   } catch (e) {
     return createError({
-      message: (e as ZodError).message,
+      message: JSON.stringify((e as ZodError).format()),
       statusCode: 400,
       fatal: false,
     })
