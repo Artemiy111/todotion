@@ -7,6 +7,7 @@ export const useCardsStore = defineStore('cards', () => {
     try {
       const data: Card[] = await $fetch('/api/cards')
       cards.value = data
+      return data
     } catch (e) {
       throw e
     }
@@ -14,7 +15,7 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function createOne(body: CardCreate) {
     try {
-      await $fetch('/api/cards', { method: 'POST', body })
+      return await $fetch('/api/cards', { method: 'POST', body })
     } catch (e) {
       throw e
     }
@@ -23,7 +24,7 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function updateOne(id: string, body: CardUpdate) {
     try {
-      await $fetch(`/api/cards/${id}`, { method: 'PUT', body })
+      return await $fetch(`/api/cards/${id}`, { method: 'PUT', body })
     } catch (e) {
       throw e
     }
@@ -32,7 +33,7 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function deleteOne(id: string) {
     try {
-      await $fetch(`/api/cards/${id}`, { method: 'DELETE' })
+      return await $fetch(`/api/cards/${id}`, { method: 'DELETE' })
     } catch (e) {
       throw e
     }

@@ -7,14 +7,15 @@ export const useRowsStore = defineStore('rows', () => {
     try {
       const data: Row[] = await $fetch('/api/rows')
       rows.value = data
+      return data
     } catch (e) {
       throw e
     }
   }
 
-  async function createOne(body: RowCreate) {
+  async function createOne(body: RowCreate): Promise<Row> {
     try {
-      await $fetch('/api/rows', { method: 'POST', body })
+      return await $fetch('/api/rows', { method: 'POST', body })
     } catch (e) {
       throw e
     }
@@ -23,7 +24,7 @@ export const useRowsStore = defineStore('rows', () => {
 
   async function updateOne(id: string, body: RowUpdate) {
     try {
-      await $fetch(`/api/rows/${id}`, { method: 'PUT', body })
+      return await $fetch(`/api/rows/${id}`, { method: 'PUT', body })
     } catch (e) {
       throw e
     }
@@ -32,7 +33,7 @@ export const useRowsStore = defineStore('rows', () => {
 
   async function deleteOne(id: string) {
     try {
-      await $fetch(`/api/rows/${id}`, { method: 'DELETE' })
+      return await $fetch(`/api/rows/${id}`, { method: 'DELETE' })
     } catch (e) {
       throw e
     }
