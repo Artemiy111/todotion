@@ -1,5 +1,6 @@
 <template>
-  <div class="w-[500px] m-auto">
-    <TextBody />
+  <div class="flex flex-col gap-10">
+    <TheHeader />
+    <TheMain />
   </div>
 </template>

@@ -1,9 +1,9 @@
 <template>
   <div class="">
-    <div class="p-3 bg-white rounded-xl flex gap-2">
+    <div class="p-3 bg-slate-50 rounded-xl flex gap-2">
       <input type="checkbox" name="" id="" />
       <input type="text" :value="value" class="w-full" />
-      ><img src="~/assets/drag.png" alt="" class="h-6 cursor-grab" />
+      <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab" />
     </div>
   </div>
 </template>
