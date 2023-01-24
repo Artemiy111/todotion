@@ -1,7 +1,8 @@
 import type { Row, RowCreate, RowUpdate } from '~/types'
 import { defineStore } from 'pinia'
+
 export const useRowsStore = defineStore('rows', () => {
-  const rows = ref<Row[]>([])
+  const rows = ref([] as Row[])
 
   async function getAll() {
     try {

@@ -4,9 +4,9 @@ import {
   CardUpdateSchema,
   RowCreateSchema,
   RowUpdateSchema,
-} from '~~/validation'
+} from '~/schema'
 
-export interface Card {
+export type Card = {
   _id: string
   title: string
   order: number
@@ -17,7 +17,7 @@ export interface Card {
 export type CardCreate = z.infer<typeof CardCreateSchema>
 export type CardUpdate = z.infer<typeof CardUpdateSchema>
 
-export interface Row {
+export type Row = {
   _id: string
   text: string
   isCompleted: boolean

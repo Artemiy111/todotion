@@ -2,8 +2,8 @@
   <div
     class="flex flex-col gap-3 w-[350px] bg-white rounded-xl p-5 min-h-fit max-h-screen overflow-auto"
   >
-    <CardCreate class="mb-2" placeholder="New card" />
-    <SlickList v-model:list="cards" :useDragHandle="true">
+    <CardCreate placeholder="New card" />
+    <SlickList v-model:list="cards" class="flex flex-col gap-3">
       <SlickItem
         v-for="(card, index) in cards"
         :key="card.id"
@@ -11,11 +11,7 @@
         tag="no"
       >
         <Card>
-          <FontAwesomeIcon
-            drag-handle
-            icon="fa-solid fa-bars"
-            class="text-xl"
-          />
+          <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab" />
         </Card>
       </SlickItem>
     </SlickList>

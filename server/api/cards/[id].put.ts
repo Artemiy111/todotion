@@ -1,6 +1,6 @@
 import type { ZodError } from 'zod'
 import { CardModel } from '~/server/models/Card.model'
-import { CardUpdateSchema } from '~~/validation'
+import { CardUpdateSchema } from '~/schema'
 
 export default defineEventHandler(async event => {
   const id: string = event.context.params.id

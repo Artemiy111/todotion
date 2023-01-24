@@ -1,6 +1,6 @@
 import type { ZodError } from 'zod'
 import { CardModel } from '~/server/models/Card.model'
-import { CardCreateSchema } from '~~/validation'
+import { CardCreateSchema } from '~/schema'
 
 export default defineEventHandler(async event => {
   const body = await readBody(event)

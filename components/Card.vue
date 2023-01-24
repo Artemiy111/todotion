@@ -9,13 +9,16 @@
       <input
         type="text"
         class="w-full h-full bg-transparent focus:outline-none"
-        :placeholder="placeholder"
+        :placeholder="props.placeholder"
       />
     </div>
     <button
       class="rounded-r-xl aspect-square h-full focus:outline-none focus:bg-blue-100 active:bg-blue-200"
     >
-      <FontAwesomeIcon icon="fa-solid fa-xmark" class="text-xl" />
+      <FontAwesomeIcon
+        icon="fa-solid fa-xmark"
+        class="text-xl [pointer-events:none]:none"
+      />
     </button>
   </div>
 </template>

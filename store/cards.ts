@@ -1,11 +1,12 @@
 import type { Card, CardCreate, CardUpdate } from '~/types'
 import { defineStore } from 'pinia'
+
 export const useCardsStore = defineStore('cards', () => {
-  const cards = ref<Card[]>([])
+  const cards = ref([] as Card[])
 
   async function getAll() {
     try {
-      const data: Card[] = await $fetch('/api/cards')
+      const data = (await $fetch('/api/cards')) as Card[]
       cards.value = data
       return data
     } catch (e) {

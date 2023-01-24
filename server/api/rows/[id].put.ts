@@ -1,6 +1,6 @@
 import type { ZodError } from 'zod'
 import { RowModel } from '~/server/models/Row.model'
-import { RowUpdateSchema } from '~~/validation'
+import { RowUpdateSchema } from '~/schema'
 
 export default defineEventHandler(async event => {
   const id: string = event.context.params.id

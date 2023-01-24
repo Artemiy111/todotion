@@ -1,6 +1,6 @@
 import type { ZodError } from 'zod'
 import { RowModel } from '~/server/models/Row.model'
-import { RowCreateSchema } from '~~/validation'
+import { RowCreateSchema } from '~/schema'
 
 export default defineEventHandler(async event => {
   const body = await readBody(event)

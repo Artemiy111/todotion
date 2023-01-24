@@ -1,7 +1,7 @@
 <template>
   <SlickList
     v-model:list="rows"
-    class="flex flex-col gap-5 p-5 bg-white rounded-xl"
+    class="flex flex-col gap-3 p-5 bg-white rounded-xl"
     lockAxis="y"
   >
     <SlickItem
@@ -10,7 +10,7 @@
       :index="index"
       class=""
     >
-      <Row :value="row.text" />
+      <ContentRow :value="row.text" />
     </SlickItem>
   </SlickList>
 </template>
