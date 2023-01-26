@@ -1,29 +1,29 @@
 import type { ZodError } from 'zod'
-import { CardModel } from '~/server/models/Card.model'
 import { CardUpdateSchema } from '~/schema'
+import type { CardUpdate } from '~/types'
+
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 export default defineEventHandler(async event => {
-  const id: string = event.context.params.id
+  const id = event.context.params.id as string
 
-  const body = await readBody(event)
+  const body = (await readBody(event)) as CardUpdate
 
   try {
     CardUpdateSchema.parse(body)
   } catch (e) {
     return createError({
-      message: (e as ZodError).message,
+      message: JSON.stringify((e as ZodError).format()),
       statusCode: 400,
       fatal: false,
     })
   }
 
-  return await CardModel.findByIdAndUpdate(id, body, {
-    new: true,
-  }).catch(e =>
+  return await prisma.todoCard.update({ where: { id }, data: body }).catch(e =>
     createError({
       message: `Could not update card with id: ${id}`,
       statusCode: 500,
-      fatal: false,
     })
   )
 })

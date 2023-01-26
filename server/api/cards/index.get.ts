@@ -1,7 +1,10 @@
-import { CardModel } from '~/server/models/Card.model'
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
-export default defineEventHandler(async event => {
-  return await CardModel.find().catch(e =>
-    createError({ message: 'Could not return cards', statusCode: 500 })
-  )
+export default defineEventHandler(async () => {
+  return prisma.todoCard
+    .findMany()
+    .catch(e =>
+      createError({ message: 'Could not return cards', statusCode: 500 })
+    )
 })

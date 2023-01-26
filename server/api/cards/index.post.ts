@@ -1,9 +1,13 @@
 import type { ZodError } from 'zod'
-import { CardModel } from '~/server/models/Card.model'
+
 import { CardCreateSchema } from '~/schema'
+import type { CardCreate } from '~/types'
+
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 export default defineEventHandler(async event => {
-  const body = await readBody(event)
+  const body = (await readBody(event)) as CardCreate
 
   try {
     CardCreateSchema.parse(body)
@@ -14,7 +18,9 @@ export default defineEventHandler(async event => {
     })
   }
 
-  return await CardModel.create(body).catch(e =>
-    createError({ message: 'Could not create card' })
-  )
+  return await prisma.todoCard
+    .create({ data: body })
+    .catch(e =>
+      createError({ message: 'Could not create card', statusCode: 500 })
+    )
 })

@@ -1,19 +1,13 @@
-import { RowModel } from '~/server/models/Row.model'
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
 export default defineEventHandler(async event => {
-  const id: string = event.context.params.id
+  const id = event.context.params.id as string
 
-  const deletedRow = await RowModel.findByIdAndDelete(id).catch(e =>
+  return await prisma.todoRow.delete({ where: { id } }).catch(e =>
     createError({
-      message: `Could not delete row with id: ${id}`,
-      statusCode: 500,
-    })
-  )
-
-  if (!deletedRow)
-    return createError({
       message: `No such row with id: ${id}`,
       statusCode: 400,
     })
-
-  return deletedRow
+  )
 })

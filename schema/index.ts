@@ -14,7 +14,7 @@ export const RowCreateSchema = z.object({
   text: z.string().optional(),
   isCompleted: z.boolean().optional(),
   order: z.number().int().min(1),
-  card: z.string(),
+  todoCardId: z.string(),
 })
 
 export const RowUpdateSchema = z.object({

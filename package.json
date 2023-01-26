@@ -19,8 +19,9 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.2",
     "@pinia/nuxt": "^0.4.6",
-    "mongoose": "^6.7.5",
+    "@prisma/client": "^4.9.0",
     "pinia": "^2.0.27",
+    "prisma": "^4.9.0",
     "vue-slicksort": "^2.0.3",
     "zod": "^3.19.1"
   }

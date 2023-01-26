@@ -1,9 +1,12 @@
 import type { ZodError } from 'zod'
-import { RowModel } from '~/server/models/Row.model'
 import { RowCreateSchema } from '~/schema'
+import type { RowCreate } from '~/types'
+
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 export default defineEventHandler(async event => {
-  const body = await readBody(event)
+  const body = (await readBody(event)) as RowCreate
 
   try {
     RowCreateSchema.parse(body)
@@ -14,11 +17,11 @@ export default defineEventHandler(async event => {
       fatal: false,
     })
   }
-
-  return await RowModel.create(body).catch(e =>
-    createError({
-      message: e.message,
-      statusCode: 500,
-    })
-  )
+  return await prisma.todoRow.create({ data: body })
+  // return await RowModel.create(body).catch(e =>
+  //   createError({
+  //     message: e.message,
+  //     statusCode: 500,
+  //   })
+  // )
 })

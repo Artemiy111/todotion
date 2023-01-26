@@ -1,25 +1,26 @@
 import type { ZodError } from 'zod'
-import { RowModel } from '~/server/models/Row.model'
 import { RowUpdateSchema } from '~/schema'
+import type { RowUpdate } from '~/types'
+
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 export default defineEventHandler(async event => {
-  const id: string = event.context.params.id
+  const id = event.context.params.id as string
 
-  const body = await readBody(event)
+  const body = (await readBody(event)) as RowUpdate
 
   try {
     RowUpdateSchema.parse(body)
   } catch (e) {
     return createError({
-      message: (e as ZodError).message,
+      message: JSON.stringify((e as ZodError).format()),
       statusCode: 400,
       fatal: false,
     })
   }
 
-  return await RowModel.findByIdAndUpdate(id, body, {
-    new: true,
-  }).catch(e =>
+  return await prisma.todoRow.update({ where: { id }, data: body }).catch(e =>
     createError({
       message: `Could not update row with id: ${id}`,
       statusCode: 500,
