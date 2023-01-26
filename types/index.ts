@@ -12,6 +12,7 @@ export type Card = {
   order: number
   createdAt: string
   updateAt: string
+  rows?: Row
 }
 
 export type CardCreate = z.infer<typeof CardCreateSchema>
@@ -24,6 +25,7 @@ export type Row = {
   order: number
   createdAt: string
   updatedAt: string
+  todoCardId: string
 }
 
 export type RowCreate = z.infer<typeof RowCreateSchema>

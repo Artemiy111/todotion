@@ -2,8 +2,7 @@ import type { ZodError } from 'zod'
 import { CardUpdateSchema } from '~/schema'
 import type { CardUpdate } from '~/types'
 
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import prisma from '~/server/services/prisma'
 
 export default defineEventHandler(async event => {
   const id = event.context.params.id as string

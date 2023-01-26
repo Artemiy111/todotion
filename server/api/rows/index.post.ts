@@ -2,8 +2,7 @@ import type { ZodError } from 'zod'
 import { RowCreateSchema } from '~/schema'
 import type { RowCreate } from '~/types'
 
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import prisma from '~/server/services/prisma'
 
 export default defineEventHandler(async event => {
   const body = (await readBody(event)) as RowCreate

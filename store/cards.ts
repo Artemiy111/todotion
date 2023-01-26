@@ -1,14 +1,16 @@
 import type { Card, CardCreate, CardUpdate } from '~/types'
+import type { TodoCard } from '@prisma/client'
+
 import { defineStore } from 'pinia'
 
-export const useCardsStore = defineStore('cards', () => {
-  const cards = ref([] as Card[])
+export default defineStore('cards', () => {
+  const cards = ref([] as TodoCard[])
 
   async function getAll() {
     try {
-      const data = (await $fetch('/api/cards')) as Card[]
+      const data: TodoCard[] = await $fetch('/api/cards')
       cards.value = data
-      return data
+      return cards.value
     } catch (e) {
       throw e
     }
@@ -16,7 +18,10 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function createOne(body: CardCreate) {
     try {
-      const data = await $fetch('/api/cards', { method: 'POST', body })
+      const data: TodoCard = await $fetch('/api/cards', {
+        method: 'POST',
+        body,
+      })
       getAll()
       return data
     } catch (e) {
@@ -26,7 +31,10 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function updateOne(id: string, body: CardUpdate) {
     try {
-      const data = await $fetch(`/api/cards/${id}`, { method: 'PUT', body })
+      const data: TodoCard = await $fetch(`/api/cards/${id}`, {
+        method: 'PUT',
+        body,
+      })
       getAll()
       return data
     } catch (e) {
@@ -36,7 +44,9 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function deleteOne(id: string) {
     try {
-      const data = await $fetch(`/api/cards/${id}`, { method: 'DELETE' })
+      const data: TodoCard = await $fetch(`/api/cards/${id}`, {
+        method: 'DELETE',
+      })
       getAll()
       return data
     } catch (e) {

@@ -1,14 +1,15 @@
 import type { Row, RowCreate, RowUpdate } from '~/types'
+import type { TodoRow } from '@prisma/client'
 import { defineStore } from 'pinia'
 
-export const useRowsStore = defineStore('rows', () => {
-  const rows = ref([] as Row[])
+export default defineStore('rows', () => {
+  const rows = ref([] as TodoRow[])
 
   async function getAll() {
     try {
-      const data: Row[] = await $fetch('/api/rows')
+      const data: TodoRow[] = await $fetch('/api/rows')
       rows.value = data
-      return data
+      return rows.value
     } catch (e) {
       throw e
     }
@@ -16,7 +17,10 @@ export const useRowsStore = defineStore('rows', () => {
 
   async function createOne(body: RowCreate) {
     try {
-      const data = await $fetch('/api/rows', { method: 'POST', body })
+      const data: TodoRow = await $fetch('/api/rows', {
+        method: 'POST',
+        body,
+      })
       getAll()
       return data
     } catch (e) {
@@ -26,7 +30,10 @@ export const useRowsStore = defineStore('rows', () => {
 
   async function updateOne(id: string, body: RowUpdate) {
     try {
-      const data = await $fetch(`/api/rows/${id}`, { method: 'PUT', body })
+      const data: TodoRow[] = await $fetch(`/api/rows/${id}`, {
+        method: 'PUT',
+        body,
+      })
       getAll()
       return data
     } catch (e) {
@@ -36,7 +43,9 @@ export const useRowsStore = defineStore('rows', () => {
 
   async function deleteOne(id: string) {
     try {
-      const data = await $fetch(`/api/rows/${id}`, { method: 'DELETE' })
+      const data: TodoRow[] = await $fetch(`/api/rows/${id}`, {
+        method: 'DELETE',
+      })
       getAll()
       return data
     } catch (e) {

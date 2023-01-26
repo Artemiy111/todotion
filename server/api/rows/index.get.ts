@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import prisma from '~/server/services/prisma'
 
 export default defineEventHandler(async () => {
   return await prisma.todoRow.findMany().catch(e => {
