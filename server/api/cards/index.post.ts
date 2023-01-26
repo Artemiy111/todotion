@@ -19,7 +19,5 @@ export default defineEventHandler(async event => {
 
   return await prisma.todoCard
     .create({ data: body })
-    .catch(e =>
-      createError({ message: 'Could not create card', statusCode: 500 })
-    )
+    .catch(e => createError({ message: 'Could not create card', statusCode: 500 }))
 })

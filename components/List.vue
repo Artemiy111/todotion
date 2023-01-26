@@ -4,12 +4,7 @@
     class="flex flex-col gap-3 p-5 bg-white rounded-xl"
     lockAxis="y"
   >
-    <SlickItem
-      v-for="(row, index) in rowsOfSelectedCard"
-      :key="row.id"
-      :index="index"
-      class=""
-    >
+    <SlickItem v-for="(row, index) in rowsOfSelectedCard" :key="row.id" :index="index" class="">
       <ListRow :value="row.text" />
     </SlickItem>
   </SlickList>

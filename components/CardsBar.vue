@@ -8,11 +8,7 @@
       v-model:list="cardsSortedByOrder"
       class="flex flex-col gap-3"
     >
-      <SlickItem
-        v-for="(card, index) in cardsSortedByOrder"
-        :key="card.id"
-        :index="index"
-      >
+      <SlickItem v-for="(card, index) in cardsSortedByOrder" :key="card.id" :index="index">
         <Card
           :title="card.title"
           :is-selected="isSelected(card.id).value"
@@ -26,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CardCreate, CardUpdate } from '~/types'
+import type { CardUpdate } from '~/types'
 
 import { SlickList, SlickItem } from 'vue-slicksort'
 import useCardsStore from '~/store/cards'
@@ -47,8 +43,7 @@ const cardsSortedByOrder = computed(() =>
 
 const selectedCardId = ref<string | null>(null)
 
-const isSelected = (cardId: string) =>
-  computed(() => cardId === selectedCardId.value)
+const isSelected = (cardId: string) => computed(() => cardId === selectedCardId.value)
 
 const selectCard = (cardId: string) => {
   selectedCardId.value = cardId

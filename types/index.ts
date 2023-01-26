@@ -1,10 +1,5 @@
 import { z } from 'zod'
-import {
-  CardCreateSchema,
-  CardUpdateSchema,
-  RowCreateSchema,
-  RowUpdateSchema,
-} from '~/schema'
+import { CardCreateSchema, CardUpdateSchema, RowCreateSchema, RowUpdateSchema } from '~/schema'
 
 export type Card = {
   id: string

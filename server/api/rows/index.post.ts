@@ -17,10 +17,4 @@ export default defineEventHandler(async event => {
     })
   }
   return await prisma.todoRow.create({ data: body })
-  // return await RowModel.create(body).catch(e =>
-  //   createError({
-  //     message: e.message,
-  //     statusCode: 500,
-  //   })
-  // )
 })
