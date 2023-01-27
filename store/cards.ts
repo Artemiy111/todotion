@@ -1,10 +1,12 @@
-import type { Card, CardCreate, CardUpdate } from '~/types'
+import type { CardCreate, CardUpdate } from '~/types'
 import type { TodoCard } from '@prisma/client'
 
 import { defineStore } from 'pinia'
+import useRowsStore from '~/store/rows'
 
 export default defineStore('cards', () => {
   const cards = ref([] as TodoCard[])
+  const rowsStore = useRowsStore()
 
   async function getAll() {
     try {
@@ -23,6 +25,9 @@ export default defineStore('cards', () => {
         body,
       })
       getAll()
+
+      await rowsStore.createOne({ order: 1, todoCardId: data.id })
+
       return data
     } catch (e) {
       throw e

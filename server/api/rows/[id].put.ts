@@ -12,18 +12,15 @@ export default defineEventHandler(async event => {
   try {
     RowUpdateSchema.parse(body)
   } catch (e) {
-    return createError({
+    throw createError({
       message: JSON.stringify((e as ZodError).format()),
       statusCode: 400,
-      fatal: false,
     })
   }
-
-  return await prisma.todoRow.update({ where: { id }, data: body }).catch(e =>
-    createError({
+  return await prisma.todoRow.update({ where: { id }, data: body }).catch(e => {
+    throw createError({
       message: `Could not update row with id: ${id}`,
       statusCode: 500,
-      fatal: false,
     })
-  )
+  })
 })

@@ -7,7 +7,7 @@
       class="px-3 flex gap-2 items-center w-full h-full focus-within:bg-blue-100 rounded-l-xl"
       @click="selectCard"
     >
-      <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-event:none]" />
+      <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-select:none]" />
 
       <input
         type="text"
@@ -23,7 +23,7 @@
       @click="deleteCard"
       class="rounded-r-xl aspect-square h-full flex items-center justify-center focus:outline-none focus:bg-blue-100 active:bg-blue-200"
     >
-      <FontAwesomeIcon icon="fa-solid fa-xmark" class="text-xl [user-event:none]" />
+      <FontAwesomeIcon icon="fa-solid fa-xmark" class="text-xl [user-select:none]" />
     </button>
   </div>
 </template>

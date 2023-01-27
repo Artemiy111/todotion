@@ -1,5 +1,6 @@
-import type { Row, RowCreate, RowUpdate } from '~/types'
+import type { RowCreate, RowUpdate } from '~/types'
 import type { TodoRow } from '@prisma/client'
+
 import { defineStore } from 'pinia'
 
 export default defineStore('rows', () => {
@@ -21,7 +22,7 @@ export default defineStore('rows', () => {
         method: 'POST',
         body,
       })
-      getAll()
+      await getAll()
       return data
     } catch (e) {
       throw e
@@ -34,7 +35,7 @@ export default defineStore('rows', () => {
         method: 'PUT',
         body,
       })
-      getAll()
+      await getAll()
       return data
     } catch (e) {
       throw e
@@ -43,10 +44,10 @@ export default defineStore('rows', () => {
 
   async function deleteOne(id: string) {
     try {
-      const data: TodoRow[] = await $fetch(`/api/rows/${id}`, {
+      const data: TodoRow = await $fetch(`/api/rows/${id}`, {
         method: 'DELETE',
       })
-      getAll()
+      await getAll()
       return data
     } catch (e) {
       throw e

@@ -13,7 +13,7 @@
           :title="card.title"
           :is-selected="isSelected(card.id).value"
           @select="selectCard(card.id)"
-          @update="updateCard($event, card.id)"
+          @update="updateCard(card.id, $event)"
           @delete="deleteCard(card.id)"
         />
       </SlickItem>
@@ -56,7 +56,7 @@ const createCard = (title: string, order?: number) => {
   store.createOne({ title, order })
 }
 
-const updateCard = (data: CardUpdate, cardId: string) => {
+const updateCard = (cardId: string, data: CardUpdate) => {
   store.updateOne(cardId, data)
 }
 

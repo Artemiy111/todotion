@@ -12,7 +12,7 @@
       @click="createCard"
       class="rounded-r-xl aspect-square flex items-center justify-center h-full outline-none focus:bg-blue-100 active:bg-blue-200"
     >
-      <FontAwesomeIcon icon="fa-solid fa-plus" class="text-xl [user-event:none]" />
+      <FontAwesomeIcon icon="fa-solid fa-plus" class="text-xl [user-select:none]" />
     </button>
   </div>
 </template>

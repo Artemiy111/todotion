@@ -10,11 +10,25 @@ export default defineEventHandler(async event => {
   try {
     RowCreateSchema.parse(body)
   } catch (e) {
-    return createError({
+    throw createError({
       message: JSON.stringify((e as ZodError).format()),
       statusCode: 400,
-      fatal: false,
     })
   }
-  return await prisma.todoRow.create({ data: body })
+
+  await prisma.todoRow
+    .updateMany({
+      where: { todoCardId: body.todoCardId, order: { gte: body.order } },
+      data: { order: { increment: 1 } },
+    })
+    .catch(e => {
+      throw createError({
+        message: `Could not increment order in rows where order >= ${body.order}`,
+        statusCode: 500,
+      })
+    })
+
+  return await prisma.todoRow.create({ data: body }).catch(e => {
+    throw createError({ message: `Could not create row`, statusCode: 500 })
+  })
 })
