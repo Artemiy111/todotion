@@ -44,7 +44,7 @@ const emit = defineEmits<{
 }>()
 
 const selectCard = () => {
-  emit('select')
+  if (!props.isSelected) emit('select')
 }
 
 const deleteCard = () => {

@@ -21,6 +21,7 @@
         @delete="deleteRow"
         @update-and-create="updateAndCreateRows"
         @update-and-delete="updateAndDeleteRows"
+        @focus="focusRow"
       />
     </SlickItem>
   </SlickList>
@@ -69,7 +70,9 @@ const createRow = async (data: RowCreate) => {
 }
 
 const updateRow = async (rowId: string, data: RowUpdate) => {
-  return await store.updateOne(rowId, data)
+  const row = await store.updateOne(rowId, data)
+  focusRow(row.id)
+  return row
 }
 
 const deleteRow = async (rowId: string) => {
@@ -95,12 +98,12 @@ const updateAndDeleteRows = async (
   await deleteRow(rowIdDelete)
 }
 
-const focusRow = async (rowId: string) => {
-  console.log('focus ' + rowId)
+const focusRow = async (rowId: string, cursorPlace?: number) => {
+  console.log('focus ' + rowId, cursorPlace)
   listRowComponents.value?.forEach(listRowComponent => {
     if (listRowComponent.props.row.id === rowId) {
       listRowComponent.props.row.id
-      listRowComponent.focus()
+      listRowComponent.focus(cursorPlace)
     }
   })
 }

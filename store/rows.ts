@@ -31,7 +31,7 @@ export default defineStore('rows', () => {
 
   async function updateOne(id: string, body: RowUpdate) {
     try {
-      const data: TodoRow[] = await $fetch(`/api/rows/${id}`, {
+      const data: TodoRow = await $fetch(`/api/rows/${id}`, {
         method: 'PUT',
         body,
       })

@@ -17,6 +17,33 @@ export default defineEventHandler(async event => {
       statusCode: 400,
     })
   }
+
+  if (body.order !== undefined) {
+    const row = await prisma.todoRow.findUnique({ where: { id } }).catch(e => {
+      throw createError({
+        message: `Could not find row with id: ${id}`,
+        statusCode: 500,
+      })
+    })
+    if (row === null) throw createError({ message: `No such row with id ${id}`, statusCode: 400 })
+
+    if (body.order > row.order) {
+      await prisma.todoRow.updateMany({
+        where: { order: { gt: row.order, lte: body.order } },
+        data: { order: { decrement: 1 } },
+      })
+    }
+
+    if (body.order < row.order) {
+      await prisma.todoRow.updateMany({
+        where: {
+          order: { lt: row.order, gte: body.order },
+        },
+        data: { order: { increment: 1 } },
+      })
+    }
+  }
+
   return await prisma.todoRow.update({ where: { id }, data: body }).catch(e => {
     throw createError({
       message: `Could not update row with id: ${id}`,

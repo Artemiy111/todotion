@@ -16,6 +16,8 @@
         @keydown.enter="handleEnter"
         @keydown.backspace="handleBackspace"
         @keydown.delete="handleDelete"
+        @keydown.arrow-up.arrow-down="handleArrowsVertical"
+        @keydown.arrow-left.arrow-right="handleArrowsHorizontal"
       />
       <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-select:none]" />
     </div>
@@ -25,6 +27,11 @@
 <script setup lang="ts">
 import type { TodoRow } from '.prisma/client'
 import type { RowCreate, RowUpdate } from '~/types'
+
+import { useKeyModifier } from '@vueuse/core'
+
+const ctrl = useKeyModifier('Control')
+const alt = useKeyModifier('Alt')
 
 const props = defineProps<{
   row: TodoRow
@@ -39,12 +46,21 @@ const emit = defineEmits<{
 
   (e: 'update-and-create', rowIdUpdate: string, dataUpdate: RowUpdate, dataCreate: RowCreate): void
   (e: 'update-and-delete', rowIdUpdate: string, dataUpdate: RowUpdate, rowIdDelete: string): void
+
+  (e: 'focus', rowId: string, cursorPlace?: number): void
 }>()
 
 const inputRef = ref<HTMLInputElement | null>(null)
 
-const focus = () => {
-  inputRef.value?.focus()
+const focus = (cursorPlace?: number) => {
+  if (inputRef.value === null) return
+
+  inputRef.value.focus()
+
+  if (cursorPlace !== undefined) {
+    inputRef.value.selectionStart = cursorPlace
+    inputRef.value.selectionEnd = cursorPlace
+  }
 }
 
 defineExpose({
@@ -101,9 +117,7 @@ const handleInput = (event: Event) => {
 const handleEnter = (event: KeyboardEvent) => {
   const { leftText, rightText, isPoint, isEnd } = getSelectionParams(event)
 
-  const ctrl = event.getModifierState('Control')
-
-  if (ctrl) {
+  if (ctrl.value) {
     emit('update', props.row.id, { isCompleted: !props.row.isCompleted })
     return
   }
@@ -157,6 +171,61 @@ const handleDelete = (event: KeyboardEvent) => {
 
   if (isPoint && isEnd && props.nextRow) {
     emit('update-and-delete', props.row.id, { text: text + props.nextRow.text }, props.nextRow.id)
+  }
+}
+
+const Arrows = {
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+}
+
+const checkArrow = (event: KeyboardEvent) => {
+  const arrow = event.code
+  return {
+    isArrowUp: arrow === Arrows.UP,
+    isArrowDown: arrow === Arrows.DOWN,
+    isArrowLeft: arrow === Arrows.LEFT,
+    isArrowRight: arrow === Arrows.RIGHT,
+  }
+}
+
+const handleArrowsVertical = (event: KeyboardEvent) => {
+  event.preventDefault()
+  const { isArrowUp, isArrowDown } = checkArrow(event)
+  const { start } = getSelectionParams(event)
+
+  if (alt.value) {
+    if (isArrowUp && props.prevRow) emit('update', props.row.id, { order: props.row.order - 1 })
+
+    if (isArrowDown && props.nextRow) emit('update', props.row.id, { order: props.row.order + 1 })
+    return
+  }
+
+  if (isArrowUp && props.prevRow) {
+    emit('focus', props.prevRow.id, start)
+  }
+
+  if (isArrowDown && props.nextRow) {
+    emit('focus', props.nextRow.id, start)
+  }
+}
+
+const handleArrowsHorizontal = (event: KeyboardEvent) => {
+  const { isArrowLeft, isArrowRight } = checkArrow(event)
+  const { isPoint, isStart, isEnd } = getSelectionParams(event)
+
+  if (isPoint) {
+    if (isStart && isArrowLeft && props.prevRow) {
+      event.preventDefault()
+      emit('focus', props.prevRow.id, props.prevRow.text.length)
+    }
+
+    if (isEnd && isArrowRight && props.nextRow) {
+      event.preventDefault()
+      emit('focus', props.nextRow.id, 0)
+    }
   }
 }
 </script>
