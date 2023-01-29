@@ -2,7 +2,7 @@
   <div
     class="flex max-h-screen min-h-fit w-80 flex-col gap-6 overflow-auto rounded-xl bg-white p-5"
   >
-    <CardCreate placeholder="New card" @create="createCard($event)" />
+    <TodoCardCreate placeholder="New card" @create="createCard($event)" />
     <template v-if="store.cards.length">
       <Draggable
         class="flex flex-col gap-3"
