@@ -19,7 +19,7 @@ export default defineEventHandler(async event => {
   }
 
   if (body.order !== undefined) {
-    const card = await prisma.todoCard.findUnique({ where: { id } }).catch(e => {
+    const card = await prisma.todoCard.findUnique({ where: { id } }).catch(() => {
       throw createError({
         message: `Could not find card with id: ${id}`,
         statusCode: 500,
@@ -44,7 +44,7 @@ export default defineEventHandler(async event => {
     }
   }
 
-  return await prisma.todoCard.update({ where: { id }, data: body }).catch(e => {
+  return await prisma.todoCard.update({ where: { id }, data: body }).catch(() => {
     throw createError({
       message: `Could not update card with id: ${id}`,
       statusCode: 500,

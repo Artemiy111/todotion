@@ -9,54 +9,38 @@ export default defineStore('cards', () => {
   const rowsStore = useRowsStore()
 
   async function getAll() {
-    try {
-      const data: TodoCard[] = await $fetch('/api/cards')
-      cards.value = data
-      return cards.value
-    } catch (e) {
-      throw e
-    }
+    const data: TodoCard[] = await $fetch('/api/cards')
+    cards.value = data
+    return cards.value
   }
 
   async function createOne(body: CardCreate) {
-    try {
-      const data: TodoCard = await $fetch('/api/cards', {
-        method: 'POST',
-        body,
-      })
-      getAll()
+    const data: TodoCard = await $fetch('/api/cards', {
+      method: 'POST',
+      body,
+    })
+    getAll()
 
-      await rowsStore.createOne({ order: 1, todoCardId: data.id })
+    await rowsStore.createOne({ order: 1, todoCardId: data.id })
 
-      return data
-    } catch (e) {
-      throw e
-    }
+    return data
   }
 
   async function updateOne(id: string, body: CardUpdate) {
-    try {
-      const data: TodoCard = await $fetch(`/api/cards/${id}`, {
-        method: 'PUT',
-        body,
-      })
-      getAll()
-      return data
-    } catch (e) {
-      throw e
-    }
+    const data: TodoCard = await $fetch(`/api/cards/${id}`, {
+      method: 'PUT',
+      body,
+    })
+    getAll()
+    return data
   }
 
   async function deleteOne(id: string) {
-    try {
-      const data: TodoCard = await $fetch(`/api/cards/${id}`, {
-        method: 'DELETE',
-      })
-      getAll()
-      return data
-    } catch (e) {
-      throw e
-    }
+    const data: TodoCard = await $fetch(`/api/cards/${id}`, {
+      method: 'DELETE',
+    })
+    getAll()
+    return data
   }
 
   return {

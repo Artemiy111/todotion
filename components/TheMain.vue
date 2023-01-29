@@ -8,7 +8,7 @@ const selectCard = (newSelectedCardId: string | null) => {
 
 <template>
   <div class="container m-auto flex gap-10">
-    <CardsBar class="h-fit" @select-card="selectCard" />
-    <List class="h-fit min-w-[300px]" :selectedCardId="selectCardId" />
+    <TodoCardsShell class="h-fit" @select-card="selectCard" />
+    <TodoRowsShell class="h-fit min-w-[300px]" :selected-card-id="selectCardId" />
   </div>
 </template>

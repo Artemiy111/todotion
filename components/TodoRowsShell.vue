@@ -2,17 +2,18 @@
   <div
     v-if="rowsOfSelectedCardByOrder.length"
     :list="rowsOfSelectedCardByOrder"
-    class="flex flex-col gap-3 p-5 bg-white rounded-xl"
+    class="flex flex-col gap-3 rounded-xl bg-white p-5"
     item-key="id"
     tag="div"
   >
     <!-- <template #item="{ element: row, index }"> -->
-    <ListRow
+    <TodoRow
       v-for="(row, index) in rowsOfSelectedCardByOrder"
+      :key="row.id"
       ref="listRowComponents"
       :row="row"
-      :prevRow="getSurroundingRow(index).value.prev"
-      :nextRow="getSurroundingRow(index).value.next"
+      :prev-row="getSurroundingRow(index).value.prev"
+      :next-row="getSurroundingRow(index).value.next"
       @create="createRow"
       @update="updateRow"
       @delete="deleteRow"
@@ -23,16 +24,16 @@
       <template #drag-handler>
         <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-select:none]" />
       </template>
-    </ListRow>
+    </TodoRow>
     <!-- </template> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import type { RowCreate, RowUpdate } from '~/types'
 import type { TodoRow } from '.prisma/client'
+import type { RowCreate, RowUpdate } from '~/types'
 
-import ListRow from '~/components/ListRow.vue'
+import TodoRowComponent from '~~/components/TodoRow.vue'
 // import Draggable from 'vuedraggable'
 
 import useRowsStore from '~/store/rows'
@@ -57,7 +58,7 @@ onMounted(() => {
 //   return await updateRow(row.id, { order: newOrder })
 // }
 
-const listRowComponents = ref<Array<InstanceType<typeof ListRow>> | null>(null)
+const listRowComponents = ref<Array<InstanceType<typeof TodoRowComponent>> | null>(null)
 
 const getSurroundingRow = (index: number) =>
   computed(() => {
@@ -76,7 +77,7 @@ const rowsOfSelectedCardByOrder = computed(() =>
 
 const getRow = (rowId: string): TodoRow | undefined => store.getOne(rowId)
 
-const createRow = async (data: RowCreate, needFocus: boolean = true, cursorPlace?: number) => {
+const createRow = async (data: RowCreate, needFocus = true, cursorPlace?: number) => {
   const row = await store.createOne(data)
   if (needFocus) await focusRow(row.id, cursorPlace)
   return row
@@ -85,7 +86,7 @@ const createRow = async (data: RowCreate, needFocus: boolean = true, cursorPlace
 const updateRow = async (
   rowId: string,
   data: RowUpdate,
-  needFocus: boolean = true,
+  needFocus = true,
   cursorPlace?: number
 ) => {
   const row = await store.updateOne(rowId, data)
@@ -94,7 +95,7 @@ const updateRow = async (
   return row
 }
 
-const deleteRow = async (rowId: string, needFocus: boolean = true, cursorPlace?: number) => {
+const deleteRow = async (rowId: string, needFocus = true, cursorPlace?: number) => {
   const row = await store.deleteOne(rowId)
   const prevRow = rowsOfSelectedCardByOrder.value[row.order - 1 - 1]
   if (needFocus) await focusRow(prevRow.id, cursorPlace)

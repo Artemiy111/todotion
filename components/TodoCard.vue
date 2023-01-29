@@ -1,10 +1,10 @@
 <template>
   <div
-    class="flex justify-between h-12 items-center bg-slate-50 rounded-xl"
+    class="flex h-12 items-center justify-between rounded-xl bg-slate-50"
     :class="isSelected ? 'bg-blue-50' : 'cursor-pointer'"
   >
     <div
-      class="px-3 flex gap-2 items-center w-full h-full focus-within:bg-blue-100 rounded-l-xl"
+      class="flex h-full w-full items-center gap-2 rounded-l-xl px-3 focus-within:bg-blue-100"
       @click="selectCard"
     >
       <slot name="drag-handler"></slot>
@@ -12,15 +12,15 @@
         type="text"
         :value="title"
         :class="!isSelected ? 'cursor-pointer' : ''"
-        class="w-full h-full bg-transparent outline-none"
+        class="h-full w-full bg-transparent outline-none"
         :placeholder="props.placeholder"
         :disabled="!isSelected"
         @change="updateCardTitle"
       />
     </div>
     <button
+      class="flex aspect-square h-full items-center justify-center rounded-r-xl focus:bg-blue-100 focus:outline-none active:bg-blue-200"
       @click="deleteCard"
-      class="rounded-r-xl aspect-square h-full flex items-center justify-center focus:outline-none focus:bg-blue-100 active:bg-blue-200"
     >
       <FontAwesomeIcon icon="fa-solid fa-xmark" class="text-xl [user-select:none]" />
     </button>

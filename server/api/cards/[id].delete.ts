@@ -26,14 +26,14 @@ export default defineEventHandler(async event => {
         },
       },
     })
-    .catch(e => {
+    .catch(() => {
       throw createError({
         message: `Could not decrement order in cards where order > ${card.order}`,
         statusCode: 500,
       })
     })
 
-  return await prisma.todoCard.delete({ where: { id } }).catch(e => {
+  return await prisma.todoCard.delete({ where: { id } }).catch(() => {
     createError({
       message: `Could not delete card with id: ${id}`,
       statusCode: 500,

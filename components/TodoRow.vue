@@ -1,17 +1,17 @@
 <template>
   <div class="">
-    <div class="px-3 h-12 bg-slate-50 rounded-xl flex items-center gap-2 focus-within:bg-blue-100">
+    <div class="flex h-12 items-center gap-2 rounded-xl bg-slate-50 px-3 focus-within:bg-blue-100">
       <input
         type="checkbox"
         class="cursor-pointer"
-        @change="handleCheckbox"
         :checked="props.row.isCompleted"
+        @change="handleCheckbox"
       />
       <input
         ref="inputRef"
+        class="h-full w-full bg-inherit outline-none"
         type="text"
         :value="props.row.text"
-        class="w-full h-full outline-none bg-inherit"
         @input="handleInput"
         @keydown.enter="handleEnter"
         @keydown.backspace="handleBackspace"
@@ -19,7 +19,7 @@
         @keydown.arrow-up.arrow-down="handleArrowsVertical"
         @keydown.arrow-left.arrow-right="handleArrowsHorizontal"
       />
-      <slot name="drag-handler"></slot>
+      <slot name="drag-handler" />
     </div>
   </div>
 </template>

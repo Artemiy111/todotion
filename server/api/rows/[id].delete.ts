@@ -26,14 +26,14 @@ export default defineEventHandler(async event => {
         },
       },
     })
-    .catch(e => {
+    .catch(() => {
       throw createError({
         message: `Could not decrement order in rows where order > ${row.order}`,
         statusCode: 500,
       })
     })
 
-  return await prisma.todoRow.delete({ where: { id } }).catch(e => {
+  return await prisma.todoRow.delete({ where: { id } }).catch(() => {
     throw createError({
       message: `Could not delete row with id: ${id}`,
       statusCode: 500,

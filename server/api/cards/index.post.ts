@@ -22,14 +22,14 @@ export default defineEventHandler(async event => {
       where: { order: { gte: body.order } },
       data: { order: { increment: 1 } },
     })
-    .catch(e => {
+    .catch(() => {
       throw createError({
         message: `Could not increment order in cards where order >= ${body.order}`,
         statusCode: 500,
       })
     })
 
-  return await prisma.todoCard.create({ data: body }).catch(e => {
+  return await prisma.todoCard.create({ data: body }).catch(() => {
     throw createError({ message: 'Could not create card', statusCode: 500 })
   })
 })

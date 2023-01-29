@@ -1,16 +1,16 @@
 <template>
-  <div class="flex justify-between h-12 items-center bg-slate-50 rounded-xl">
-    <div class="px-3 flex gap-2 items-center w-full h-full focus-within:bg-blue-100 rounded-l-xl">
+  <div class="flex h-12 items-center justify-between rounded-xl bg-slate-50">
+    <div class="flex h-full w-full items-center gap-2 rounded-l-xl px-3 focus-within:bg-blue-100">
       <input
-        type="text"
-        class="w-full h-full bg-transparent focus:outline-none"
-        :placeholder="props.placeholder"
         v-model="title"
+        type="text"
+        class="h-full w-full bg-transparent focus:outline-none"
+        :placeholder="props.placeholder"
       />
     </div>
     <button
+      class="flex aspect-square h-full items-center justify-center rounded-r-xl outline-none focus:bg-blue-100 active:bg-blue-200"
       @click="createCard"
-      class="rounded-r-xl aspect-square flex items-center justify-center h-full outline-none focus:bg-blue-100 active:bg-blue-200"
     >
       <FontAwesomeIcon icon="fa-solid fa-plus" class="text-xl [user-select:none]" />
     </button>

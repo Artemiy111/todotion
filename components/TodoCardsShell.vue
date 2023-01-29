@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col gap-6 w-80 bg-white rounded-xl p-5 min-h-fit max-h-screen overflow-auto"
+    class="flex max-h-screen min-h-fit w-80 flex-col gap-6 overflow-auto rounded-xl bg-white p-5"
   >
     <CardCreate placeholder="New card" @create="createCard($event)" />
     <template v-if="store.cards.length">
@@ -10,11 +10,11 @@
         tag="div"
         item-key="id"
         :animation="100"
-        @change="changeCardOrder"
         handle=".drag-handler"
+        @change="changeCardOrder"
       >
-        <template #item="{ element: card, index }">
-          <Card
+        <template #item="{ element: card }">
+          <TodoCard
             :id="card.id"
             :key="card.id"
             :title="card.title"
@@ -30,7 +30,7 @@
                 class="drag-handler h-6 cursor-grab [user-select:none]"
               />
             </template>
-          </Card>
+          </TodoCard>
         </template>
       </Draggable>
     </template>
@@ -38,14 +38,14 @@
 </template>
 
 <script setup lang="ts">
+import Draggable from 'vuedraggable'
+
+import type { TodoCard } from '.prisma/client'
 import type { CardUpdate } from '~/types'
 
 import useCardsStore from '~/store/cards'
 
-import Draggable from 'vuedraggable'
-import { TodoCard } from '.prisma/client'
-
-//? Слишком быстрый рендер
+// ? Слишком быстрый рендер
 
 const store = useCardsStore()
 
@@ -60,8 +60,8 @@ onMounted(() => {
 type DraggableChangeEvent<T> = {
   moved: { element: T; oldIndex: number; newIndex: number }
 }
-
 const changeCardOrder = async (event: DraggableChangeEvent<TodoCard>) => {
+  console.log('change')
   const card = event.moved.element
   const newOrder = event.moved.newIndex + 1
   await store.updateOne(card.id, { order: newOrder })

@@ -19,7 +19,7 @@ export default defineEventHandler(async event => {
   }
 
   if (body.order !== undefined) {
-    const row = await prisma.todoRow.findUnique({ where: { id } }).catch(e => {
+    const row = await prisma.todoRow.findUnique({ where: { id } }).catch(() => {
       throw createError({
         message: `Could not find row with id: ${id}`,
         statusCode: 500,
@@ -44,7 +44,7 @@ export default defineEventHandler(async event => {
     }
   }
 
-  return await prisma.todoRow.update({ where: { id }, data: body }).catch(e => {
+  return await prisma.todoRow.update({ where: { id }, data: body }).catch(() => {
     throw createError({
       message: `Could not update row with id: ${id}`,
       statusCode: 500,
