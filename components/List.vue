@@ -1,38 +1,39 @@
 <template>
-  <SlickList
+  <div
     v-if="rowsOfSelectedCardByOrder.length"
-    v-model:list="rowsOfSelectedCardByOrder"
+    :list="rowsOfSelectedCardByOrder"
     class="flex flex-col gap-3 p-5 bg-white rounded-xl"
-    lockAxis="y"
+    item-key="id"
+    tag="div"
   >
-    <SlickItem
+    <!-- <template #item="{ element: row, index }"> -->
+    <ListRow
       v-for="(row, index) in rowsOfSelectedCardByOrder"
-      :key="row.id"
-      :index="index"
-      class=""
+      ref="listRowComponents"
+      :row="row"
+      :prevRow="getSurroundingRow(index).value.prev"
+      :nextRow="getSurroundingRow(index).value.next"
+      @create="createRow"
+      @update="updateRow"
+      @delete="deleteRow"
+      @update-and-create="updateAndCreateRows"
+      @update-and-delete="updateAndDeleteRows"
+      @focus="focusRow"
     >
-      <ListRow
-        ref="listRowComponents"
-        :row="row"
-        :prevRow="getSurroundingRow(index).value.prev"
-        :nextRow="getSurroundingRow(index).value.next"
-        @create="createRow"
-        @update="updateRow"
-        @delete="deleteRow"
-        @update-and-create="updateAndCreateRows"
-        @update-and-delete="updateAndDeleteRows"
-        @focus="focusRow"
-      />
-    </SlickItem>
-  </SlickList>
+      <template #drag-handler>
+        <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-select:none]" />
+      </template>
+    </ListRow>
+    <!-- </template> -->
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { RowCreate, RowUpdate } from '~/types'
 import type { TodoRow } from '.prisma/client'
-import ListRow from './ListRow.vue'
 
-import { SlickList, SlickItem } from 'vue-slicksort'
+import ListRow from '~/components/ListRow.vue'
+// import Draggable from 'vuedraggable'
 
 import useRowsStore from '~/store/rows'
 
@@ -46,12 +47,22 @@ onMounted(() => {
   store.getAll()
 })
 
+// type DraggableChangeEvent<T> = {
+//   moved: { element: T; oldIndex: number; newIndex: number }
+// }
+
+// const changeRowOrder = async (event: DraggableChangeEvent<TodoRow>) => {
+//   const row = event.moved.element
+//   const newOrder = event.moved.newIndex + 1
+//   return await updateRow(row.id, { order: newOrder })
+// }
+
 const listRowComponents = ref<Array<InstanceType<typeof ListRow>> | null>(null)
 
 const getSurroundingRow = (index: number) =>
   computed(() => {
-    const prev: TodoRow | null = rowsOfSelectedCardByOrder.value[index - 1] || null
-    const next: TodoRow | null = rowsOfSelectedCardByOrder.value[index + 1] || null
+    const prev = (rowsOfSelectedCardByOrder.value[index - 1] || null) as TodoRow | null
+    const next = (rowsOfSelectedCardByOrder.value[index + 1] || null) as TodoRow | null
     return { prev, next }
   })
 
@@ -63,21 +74,31 @@ const rowsOfSelectedCardByOrder = computed(() =>
   rowsOfSelectedCard.value.sort((row1, row2) => row1.order - row2.order)
 )
 
-const createRow = async (data: RowCreate) => {
+const getRow = (rowId: string): TodoRow | undefined => store.getOne(rowId)
+
+const createRow = async (data: RowCreate, needFocus: boolean = true, cursorPlace?: number) => {
   const row = await store.createOne(data)
-  focusRow(row.id)
+  if (needFocus) await focusRow(row.id, cursorPlace)
   return row
 }
 
-const updateRow = async (rowId: string, data: RowUpdate) => {
+const updateRow = async (
+  rowId: string,
+  data: RowUpdate,
+  needFocus: boolean = true,
+  cursorPlace?: number
+) => {
   const row = await store.updateOne(rowId, data)
-  focusRow(row.id)
+  if (data.order !== undefined && needFocus) await focusRow(row.id, cursorPlace)
+
   return row
 }
 
-const deleteRow = async (rowId: string) => {
+const deleteRow = async (rowId: string, needFocus: boolean = true, cursorPlace?: number) => {
   const row = await store.deleteOne(rowId)
-  focusRow(rowsOfSelectedCardByOrder.value.find(r => r.order === row.order - 1)?.id as string)
+  const prevRow = rowsOfSelectedCardByOrder.value[row.order - 1 - 1]
+  if (needFocus) await focusRow(prevRow.id, cursorPlace)
+  return row
 }
 
 const updateAndCreateRows = async (
@@ -85,8 +106,8 @@ const updateAndCreateRows = async (
   dataUpdate: RowUpdate,
   dataCreate: RowCreate
 ) => {
-  await updateRow(rowIdUpdate, dataUpdate)
-  await createRow(dataCreate)
+  await updateRow(rowIdUpdate, dataUpdate, false)
+  await createRow(dataCreate, true, 0)
 }
 
 const updateAndDeleteRows = async (
@@ -94,8 +115,10 @@ const updateAndDeleteRows = async (
   dataUpdate: RowUpdate,
   rowIdDelete: string
 ) => {
-  await updateRow(rowIdUpdate, dataUpdate)
-  await deleteRow(rowIdDelete)
+  const rowBeforeUpdate = getRow(rowIdUpdate) as TodoRow
+  await updateRow(rowIdUpdate, dataUpdate, false)
+  await focusRow(rowBeforeUpdate.id, rowBeforeUpdate.text.length)
+  await deleteRow(rowIdDelete, false)
 }
 
 const focusRow = async (rowId: string, cursorPlace?: number) => {

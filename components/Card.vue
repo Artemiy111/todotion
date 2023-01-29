@@ -7,8 +7,7 @@
       class="px-3 flex gap-2 items-center w-full h-full focus-within:bg-blue-100 rounded-l-xl"
       @click="selectCard"
     >
-      <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-select:none]" />
-
+      <slot name="drag-handler"></slot>
       <input
         type="text"
         :value="title"

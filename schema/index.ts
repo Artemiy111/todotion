@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const CardCreateSchema = z.object({
-  title: z.string(),
+  title: z.string().min(1),
   order: z.number().int().min(1),
 })
 

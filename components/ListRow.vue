@@ -19,7 +19,7 @@
         @keydown.arrow-up.arrow-down="handleArrowsVertical"
         @keydown.arrow-left.arrow-right="handleArrowsHorizontal"
       />
-      <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-select:none]" />
+      <slot name="drag-handler"></slot>
     </div>
   </div>
 </template>

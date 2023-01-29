@@ -23,7 +23,7 @@
     "@vueuse/core": "^9.11.1",
     "pinia": "^2.0.27",
     "prisma": "^4.9.0",
-    "vue-slicksort": "^2.0.3",
+    "vuedraggable": "^4.1.0",
     "zod": "^3.19.1"
   }
 }

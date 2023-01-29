@@ -15,14 +15,39 @@ export default defineEventHandler(async event => {
     return createError({
       message: JSON.stringify((e as ZodError).format()),
       statusCode: 400,
-      fatal: false,
     })
   }
 
-  return await prisma.todoCard.update({ where: { id }, data: body }).catch(e =>
-    createError({
+  if (body.order !== undefined) {
+    const card = await prisma.todoCard.findUnique({ where: { id } }).catch(e => {
+      throw createError({
+        message: `Could not find card with id: ${id}`,
+        statusCode: 500,
+      })
+    })
+    if (card === null) throw createError({ message: `No such card with id ${id}`, statusCode: 400 })
+
+    if (body.order > card.order) {
+      await prisma.todoCard.updateMany({
+        where: { order: { gt: card.order, lte: body.order } },
+        data: { order: { decrement: 1 } },
+      })
+    }
+
+    if (body.order < card.order) {
+      await prisma.todoCard.updateMany({
+        where: {
+          order: { lt: card.order, gte: body.order },
+        },
+        data: { order: { increment: 1 } },
+      })
+    }
+  }
+
+  return await prisma.todoCard.update({ where: { id }, data: body }).catch(e => {
+    throw createError({
       message: `Could not update card with id: ${id}`,
       statusCode: 500,
     })
-  )
+  })
 })

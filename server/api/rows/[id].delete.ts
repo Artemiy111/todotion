@@ -1,4 +1,3 @@
-import { TodoRow } from '@prisma/client'
 import prisma from '~/server/services/prisma'
 
 export default defineEventHandler(async event => {

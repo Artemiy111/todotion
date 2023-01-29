@@ -16,6 +16,11 @@ export default defineStore('rows', () => {
     }
   }
 
+  function getOne(rowId: string) {
+    const row: TodoRow | undefined = rows.value.find(row => row.id === rowId)
+    return row
+  }
+
   async function createOne(body: RowCreate) {
     try {
       const data: TodoRow = await $fetch('/api/rows', {
@@ -57,6 +62,7 @@ export default defineStore('rows', () => {
   return {
     rows,
     getAll,
+    getOne,
     createOne,
     updateOne,
     deleteOne,

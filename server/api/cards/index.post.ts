@@ -11,13 +11,25 @@ export default defineEventHandler(async event => {
   try {
     CardCreateSchema.parse(body)
   } catch (e) {
-    return createError({
+    throw createError({
       message: JSON.stringify((e as ZodError).format()),
       statusCode: 400,
     })
   }
 
-  return await prisma.todoCard
-    .create({ data: body })
-    .catch(e => createError({ message: 'Could not create card', statusCode: 500 }))
+  await prisma.todoCard
+    .updateMany({
+      where: { order: { gte: body.order } },
+      data: { order: { increment: 1 } },
+    })
+    .catch(e => {
+      throw createError({
+        message: `Could not increment order in cards where order >= ${body.order}`,
+        statusCode: 500,
+      })
+    })
+
+  return await prisma.todoCard.create({ data: body }).catch(e => {
+    throw createError({ message: 'Could not create card', statusCode: 500 })
+  })
 })
