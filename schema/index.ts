@@ -8,6 +8,7 @@ export const CardCreateSchema = z.object({
 export const CardUpdateSchema = z.object({
   title: z.string().optional(),
   order: z.number().int().min(1).optional(),
+  color: z.string().min(1).optional(),
 })
 
 export const RowCreateSchema = z.object({

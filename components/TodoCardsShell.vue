@@ -2,6 +2,16 @@
   <div
     class="flex max-h-screen min-h-fit w-80 flex-col gap-6 overflow-auto rounded-xl bg-white p-5"
   >
+    <Teleport to="body"
+      ><ColorPicker
+        ref="colorPickerComponent"
+        :default-color="defaultColor"
+        :colors="colors"
+        class="absolute"
+        :style="{ top: pickerPosition.top + 'px', left: pickerPosition.left + 'px' }"
+        @pick-color="pickColor"
+    /></Teleport>
+
     <TodoCardCreate placeholder="New card" @create="createCard($event)" />
     <template v-if="store.cards.length">
       <Draggable
@@ -18,10 +28,12 @@
             :id="card.id"
             :key="card.id"
             :title="card.title"
+            :color="card.color"
             :is-selected="isSelected(card.id).value"
             @select="selectCard(card.id)"
             @update="updateCard(card.id, $event)"
             @delete="deleteCard(card.id)"
+            @open-color-picker="openColorPicker"
           >
             <template #drag-handler>
               <img
@@ -39,6 +51,7 @@
 
 <script setup lang="ts">
 import Draggable from 'vuedraggable'
+import ColorPicker from './ColorPicker.vue'
 
 import type { TodoCard } from '.prisma/client'
 import type { CardUpdate } from '~/types'
@@ -50,18 +63,53 @@ import useCardsStore from '~/store/cards'
 const store = useCardsStore()
 
 const emit = defineEmits<{
-  (e: 'select-card', cardId: string | null): void
+  (e: 'select-card', cardId?: string): void
 }>()
 
 onMounted(() => {
   store.getAll()
 })
 
+const colorPickerComponent = ref<InstanceType<typeof ColorPicker> | null>(null)
+
+const defaultColor = ref('slate')
+
+const colors = [
+  'slate',
+  'neutral',
+  'rose',
+  'orange',
+  'yellow',
+  'lime',
+  'green',
+  'teal',
+  'blue',
+  'indigo',
+  'purple',
+  'pink',
+]
+
+const pickerPosition = ref({ top: 0, left: 0 })
+
+const openColorPicker = (
+  prevColor: string,
+  key: string,
+  position: { top: number; left: number }
+) => {
+  defaultColor.value = prevColor
+  pickerPosition.value = position
+  colorPickerComponent.value?.open(key)
+}
+
+const pickColor = async (color: string, cardId?: string) => {
+  if (cardId === undefined) return
+  console.log(await store.updateOne(cardId, { color }))
+}
+
 type DraggableChangeEvent<T> = {
   moved: { element: T; oldIndex: number; newIndex: number }
 }
 const changeCardOrder = async (event: DraggableChangeEvent<TodoCard>) => {
-  console.log('change')
   const card = event.moved.element
   const newOrder = event.moved.newIndex + 1
   await store.updateOne(card.id, { order: newOrder })
@@ -71,7 +119,7 @@ const cardsSortedByOrder = computed(() =>
   store.cards.sort((card1, card2) => card1.order - card2.order)
 )
 
-const selectedCardId = ref<string | null>(null)
+const selectedCardId = ref<string>()
 
 const isSelected = (cardId: string) => computed(() => cardId === selectedCardId.value)
 
@@ -92,8 +140,8 @@ const updateCard = (cardId: string, data: CardUpdate) => {
 
 const deleteCard = (cardId: string) => {
   if (selectedCardId.value === cardId) {
-    selectedCardId.value = null
-    emit('select-card', null)
+    selectedCardId.value = undefined
+    emit('select-card', undefined)
   }
 
   store.deleteOne(cardId)

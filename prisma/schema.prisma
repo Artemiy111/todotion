@@ -11,6 +11,7 @@ model TodoCard {
   id        String    @id @default(uuid()) @db.Uuid
   title     String
   order     Int
+  color     String    @default("slate")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   todoRows  TodoRow[]

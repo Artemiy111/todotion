@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const selectCardId = ref<string | null>(null)
+const selectCardId = ref<string>()
 
-const selectCard = (newSelectedCardId: string | null) => {
+const selectCard = (newSelectedCardId?: string) => {
   selectCardId.value = newSelectedCardId
 }
 </script>

@@ -14,6 +14,7 @@
       :row="row"
       :prev-row="getSurroundingRow(index).value.prev"
       :next-row="getSurroundingRow(index).value.next"
+      :placeholder="row.order === 1 ? 'Start typing' : ''"
       @create="createRow"
       @update="updateRow"
       @delete="deleteRow"
@@ -33,7 +34,7 @@
 import type { TodoRow } from '.prisma/client'
 import type { RowCreate, RowUpdate } from '~/types'
 
-import TodoRowComponent from '~~/components/TodoRow.vue'
+import TodoRowComponent from '~/components/TodoRow.vue'
 // import Draggable from 'vuedraggable'
 
 import useRowsStore from '~/store/rows'
@@ -41,7 +42,7 @@ import useRowsStore from '~/store/rows'
 const store = useRowsStore()
 
 const props = defineProps<{
-  selectedCardId: string | null
+  selectedCardId?: string
 }>()
 
 onMounted(() => {

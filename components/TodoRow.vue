@@ -11,6 +11,7 @@
         ref="inputRef"
         class="h-full w-full bg-inherit outline-none"
         type="text"
+        :placeholder="props.placeholder"
         :value="props.row.text"
         @input="handleInput"
         @keydown.enter="handleEnter"
@@ -19,6 +20,7 @@
         @keydown.arrow-up.arrow-down="handleArrowsVertical"
         @keydown.arrow-left.arrow-right="handleArrowsHorizontal"
       />
+
       <slot name="drag-handler" />
     </div>
   </div>
@@ -37,6 +39,7 @@ const props = defineProps<{
   row: TodoRow
   prevRow: TodoRow | null
   nextRow: TodoRow | null
+  placeholder?: string
 }>()
 
 const emit = defineEmits<{
