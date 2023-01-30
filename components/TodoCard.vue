@@ -12,11 +12,11 @@
       <slot name="drag-handler"></slot>
       <input
         type="text"
-        :value="title"
         :class="!isSelected ? 'cursor-pointer' : ''"
         class="h-full w-full bg-transparent outline-none"
         :placeholder="props.placeholder"
         :disabled="!isSelected"
+        :value="title"
         @change="updateCardTitle"
       />
     </div>
