@@ -1,4 +1,4 @@
-import prisma from '~/server/services/prisma'
+import prisma from '~/server/db/prisma'
 
 export default defineEventHandler(async () => {
   return await prisma.todoCard.findMany().catch(() => {

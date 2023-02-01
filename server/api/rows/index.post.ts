@@ -1,21 +1,10 @@
-import type { ZodError } from 'zod'
-
+import validateBody from '~/server/validateBody'
 import { RowCreateSchema } from '~/schema'
-import type { RowCreate } from '~/types'
 
-import prisma from '~/server/services/prisma'
+import prisma from '~/server/db/prisma'
 
 export default defineEventHandler(async event => {
-  const body = (await readBody(event)) as RowCreate
-
-  try {
-    RowCreateSchema.parse(body)
-  } catch (e) {
-    throw createError({
-      message: JSON.stringify((e as ZodError).format()),
-      statusCode: 400,
-    })
-  }
+  const body = validateBody(RowCreateSchema, await readBody(event))
 
   await prisma.todoRow
     .updateMany({

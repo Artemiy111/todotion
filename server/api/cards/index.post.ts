@@ -1,21 +1,10 @@
-import type { ZodError } from 'zod'
-
+import validateBody from '~/server/validateBody'
 import { CardCreateSchema } from '~/schema'
-import type { CardCreate } from '~/types'
 
-import prisma from '~/server/services/prisma'
+import prisma from '~/server/db/prisma'
 
 export default defineEventHandler(async event => {
-  const body = (await readBody(event)) as CardCreate
-
-  try {
-    CardCreateSchema.parse(body)
-  } catch (e) {
-    throw createError({
-      message: JSON.stringify((e as ZodError).format()),
-      statusCode: 400,
-    })
-  }
+  const body = validateBody(CardCreateSchema, await readBody(event))
 
   await prisma.todoCard
     .updateMany({

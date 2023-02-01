@@ -1,22 +1,12 @@
-import type { ZodError } from 'zod'
+import validateBody from '~/server/validateBody'
 import { RowUpdateSchema } from '~/schema'
-import type { RowUpdate } from '~/types'
 
-import prisma from '~/server/services/prisma'
+import prisma from '~/server/db/prisma'
 
 export default defineEventHandler(async event => {
   const id = event.context.params.id as string
 
-  const body = (await readBody(event)) as RowUpdate
-
-  try {
-    RowUpdateSchema.parse(body)
-  } catch (e) {
-    throw createError({
-      message: JSON.stringify((e as ZodError).format()),
-      statusCode: 400,
-    })
-  }
+  const body = validateBody(RowUpdateSchema, await readBody(event))
 
   if (body.order !== undefined) {
     const row = await prisma.todoRow.findUnique({ where: { id } }).catch(() => {

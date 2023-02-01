@@ -8,38 +8,39 @@ export default defineStore('cards', () => {
   const cards = ref([] as TodoCard[])
   const rowsStore = useRowsStore()
 
-  async function getAll() {
+  async function getAll(): Promise<TodoCard[]> {
     const data: TodoCard[] = await $fetch('/api/cards')
     cards.value = data
     return cards.value
   }
 
-  async function createOne(body: CardCreate) {
+  async function createOne(body: CardCreate): Promise<TodoCard> {
     const data: TodoCard = await $fetch('/api/cards', {
       method: 'POST',
       body,
     })
-    getAll()
 
     await rowsStore.createOne({ order: 1, todoCardId: data.id })
+
+    await getAll()
 
     return data
   }
 
-  async function updateOne(id: string, body: CardUpdate) {
+  async function updateOne(id: string, body: CardUpdate): Promise<TodoCard> {
     const data: TodoCard = await $fetch(`/api/cards/${id}`, {
       method: 'PUT',
       body,
     })
-    getAll()
+    await getAll()
     return data
   }
 
-  async function deleteOne(id: string) {
+  async function deleteOne(id: string): Promise<TodoCard> {
     const data: TodoCard = await $fetch(`/api/cards/${id}`, {
       method: 'DELETE',
     })
-    getAll()
+    await getAll()
     return data
   }
 

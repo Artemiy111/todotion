@@ -51,13 +51,16 @@
 
 <script setup lang="ts">
 import Draggable from 'vuedraggable'
-import ColorPicker from './ColorPicker.vue'
+import ColorPicker from '~/components/ColorPicker.vue'
 
 import type { TodoCard } from '.prisma/client'
 import type { CardUpdate } from '~/types'
 
 import useCardsStore from '~/store/cards'
 
+import { FetchError } from 'ofetch'
+import { useToast } from 'vue-toastification'
+const toast = useToast()
 // ? Слишком быстрый рендер
 
 const store = useCardsStore()
@@ -103,7 +106,7 @@ const openColorPicker = (
 
 const pickColor = async (color: string, cardId?: string) => {
   if (cardId === undefined) return
-  console.log(await store.updateOne(cardId, { color }))
+  await store.updateOne(cardId, { color })
 }
 
 type DraggableChangeEvent<T> = {
@@ -128,22 +131,34 @@ const selectCard = (cardId: string) => {
   emit('select-card', cardId)
 }
 
-const createCard = (title: string, order?: number) => {
+const createCard = async (title: string, order?: number) => {
   if (order === undefined) order = store.cards.length + 1
 
-  store.createOne({ title, order })
+  try {
+    await store.createOne({ title, order })
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 
-const updateCard = (cardId: string, data: CardUpdate) => {
-  store.updateOne(cardId, data)
+const updateCard = async (cardId: string, data: CardUpdate) => {
+  try {
+    await store.updateOne(cardId, data)
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 
-const deleteCard = (cardId: string) => {
+const deleteCard = async (cardId: string) => {
   if (selectedCardId.value === cardId) {
     selectedCardId.value = undefined
     emit('select-card', undefined)
   }
 
-  store.deleteOne(cardId)
+  try {
+    await store.deleteOne(cardId)
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 </script>
