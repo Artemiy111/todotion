@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="flex items-center justify-between rounded-b-xl p-5">
+    <div class="mb-5 flex items-center justify-between rounded-b-xl">
       <span class="text-xl font-bold">Todotion</span>
       <div class="flex items-center gap-6">
         <FontAwesomeIcon

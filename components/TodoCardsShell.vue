@@ -10,7 +10,7 @@
         @pick-color="pickColor"
     /></Teleport>
 
-    <TodoCardCreate placeholder="New card" @create="createCard($event)" />
+    <TodoCardCreate placeholder="Новая карточка" @create="createCard($event)" />
     <template v-if="store.cards.length">
       <Draggable
         class="flex flex-col gap-3"
@@ -57,7 +57,9 @@ import type { CardUpdate } from '~/types'
 import useCardsStore from '~/store/cards'
 
 import { FetchError } from 'ofetch'
+
 import { useToast } from 'vue-toastification'
+
 const toast = useToast()
 // ? Слишком быстрый рендер
 

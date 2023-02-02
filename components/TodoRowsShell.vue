@@ -14,7 +14,7 @@
       :row="row"
       :prev-row="getSurroundingRow(index).value.prev"
       :next-row="getSurroundingRow(index).value.next"
-      :placeholder="row.order === 1 ? 'Start typing' : ''"
+      :placeholder="row.order === 1 ? 'Начните писать' : ''"
       @create="createRow"
       @update="updateRow"
       @delete="deleteRow"
