@@ -1,6 +1,8 @@
 <template>
-  <div class="flex h-12 items-center justify-between rounded-xl bg-slate-50">
-    <div class="flex h-full w-full items-center gap-2 rounded-l-xl px-3 focus-within:bg-slate-200">
+  <div class="flex h-12 items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800">
+    <div
+      class="flex h-full w-full items-center gap-2 rounded-l-xl px-3 focus-within:bg-slate-200 dark:focus-within:bg-slate-600"
+    >
       <input
         v-model="title"
         type="text"

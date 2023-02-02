@@ -8,4 +8,10 @@ export default defineNuxtConfig({
       '@fortawesome/pro-solid-svg-icons',
     ],
   },
+  app: {
+    head: {
+      title: 'Todotion',
+      meta: [{ name: 'description', content: 'Todotion, the to-do app' }],
+    },
+  },
 })

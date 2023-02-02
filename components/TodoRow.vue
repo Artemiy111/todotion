@@ -1,6 +1,8 @@
 <template>
   <div class="">
-    <div class="flex h-12 items-center gap-2 rounded-xl bg-slate-50 px-3 focus-within:bg-blue-100">
+    <div
+      class="flex h-12 items-center gap-2 rounded-xl bg-slate-50 px-3 focus-within:bg-slate-100 dark:bg-slate-800 dark:focus-within:bg-slate-700"
+    >
       <input
         type="checkbox"
         class="cursor-pointer"
@@ -152,6 +154,7 @@ const handleEnter = (event: KeyboardEvent) => {
     }
   )
 }
+
 const handleBackspace = (event: KeyboardEvent) => {
   const { text, isPoint, isEmpty, isStart } = getSelectionParams(event)
 

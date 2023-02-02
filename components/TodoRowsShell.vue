@@ -2,7 +2,7 @@
   <div
     v-if="rowsOfSelectedCardByOrder.length"
     :list="rowsOfSelectedCardByOrder"
-    class="flex flex-col gap-3 rounded-xl bg-white p-5"
+    class="flex flex-col gap-3 rounded-xl"
     item-key="id"
     tag="div"
   >
@@ -23,7 +23,11 @@
       @focus="focusRow"
     >
       <template #drag-handler>
-        <img src="~/assets/drag.png" alt="" class="h-6 cursor-grab [user-select:none]" />
+        <img
+          src="~/assets/drag.png"
+          alt=""
+          class="h-6 cursor-grab [user-select:none] dark:invert"
+        />
       </template>
     </TodoRow>
     <!-- </template> -->
@@ -78,9 +82,14 @@ const rowsOfSelectedCardByOrder = computed(() =>
 
 const getRow = (rowId: string): TodoRow | undefined => store.getOne(rowId)
 
-const createRow = async (data: RowCreate, needFocus = true, cursorPlace?: number) => {
+const createRow = async (
+  data: RowCreate,
+  needFocus = true,
+  cursorPlace?: number
+): Promise<TodoRow> => {
   const row = await store.createOne(data)
   if (needFocus) await focusRow(row.id, cursorPlace)
+
   return row
 }
 
@@ -89,17 +98,22 @@ const updateRow = async (
   data: RowUpdate,
   needFocus = true,
   cursorPlace?: number
-) => {
+): Promise<TodoRow> => {
   const row = await store.updateOne(rowId, data)
   if (data.order !== undefined && needFocus) await focusRow(row.id, cursorPlace)
 
   return row
 }
 
-const deleteRow = async (rowId: string, needFocus = true, cursorPlace?: number) => {
+const deleteRow = async (
+  rowId: string,
+  needFocus = true,
+  cursorPlace?: number
+): Promise<TodoRow> => {
   const row = await store.deleteOne(rowId)
   const prevRow = rowsOfSelectedCardByOrder.value[row.order - 1 - 1]
   if (needFocus) await focusRow(prevRow.id, cursorPlace)
+
   return row
 }
 

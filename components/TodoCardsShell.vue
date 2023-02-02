@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex max-h-screen min-h-fit w-80 flex-col gap-6 overflow-auto rounded-xl bg-white p-5"
-  >
+  <div class="flex flex-col gap-6 rounded-xl">
     <Teleport to="body"
       ><ColorPicker
         ref="colorPickerComponent"
@@ -39,7 +37,7 @@
               <img
                 src="~/assets/drag.png"
                 alt=""
-                class="drag-handler h-6 cursor-grab [user-select:none]"
+                class="drag-handler h-6 cursor-grab [user-select:none] dark:invert"
               />
             </template>
           </TodoCard>
@@ -132,6 +130,7 @@ const selectCard = (cardId: string) => {
 }
 
 const createCard = async (title: string, order?: number) => {
+  if (title.trim() === '') return
   if (order === undefined) order = store.cards.length + 1
 
   try {

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const CardCreateSchema = z.object({
-  title: z.string().min(1),
+  title: z.string().trim().min(1),
   order: z.number().int().min(1),
 })
 
@@ -12,7 +12,7 @@ export const CardUpdateSchema = z.object({
 })
 
 export const RowCreateSchema = z.object({
-  text: z.string().optional(),
+  text: z.string().trim().optional(),
   isCompleted: z.boolean().optional(),
   order: z.number().int().min(1),
   todoCardId: z.string(),

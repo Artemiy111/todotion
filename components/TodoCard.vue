@@ -2,11 +2,16 @@
   <div
     ref="todoCardRef"
     class="flex h-12 items-center justify-between rounded-xl"
-    :class="[`bg-${props.color}-50`, isSelected ? `bg-${props.color}-100` : 'cursor-pointer']"
+    :class="[
+      ``,
+      isSelected
+        ? `bg-${props.color}-100 dark:bg-${props.color}-700`
+        : `bg-${props.color}-50 dark:bg-${props.color}-800 cursor-pointer`,
+    ]"
   >
     <div
       class="flex h-full w-full items-center gap-2 rounded-l-xl px-3"
-      :class="`focus-within:bg-${color}-200`"
+      :class="`focus-within:bg-${color}-200 dark:focus-within:bg-${color}-600`"
       @click="selectCard"
     >
       <slot name="drag-handler"></slot>
