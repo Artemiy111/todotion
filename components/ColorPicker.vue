@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     ref="colorPickerRef"
-    class="grid w-fit grid-cols-4 gap-4 rounded-lg bg-white p-5 shadow-2xl dark:bg-slate-900"
+    class="grid w-fit grid-cols-4 gap-4 rounded-lg bg-white p-5 shadow-2xl dark:bg-slate-800"
   >
     <div v-for="color in props.colors" :key="color">
       <label class="block h-full w-full">
@@ -39,11 +39,9 @@ const colorPickerRef = ref<HTMLDivElement | null>(null)
 
 const keyPick = ref<string>()
 
-onClickOutside(colorPickerRef, () => {
-  close()
-})
-
 const isOpen = ref(false)
+
+onClickOutside(colorPickerRef, () => close())
 
 const open = (key?: string) => {
   isOpen.value = true
@@ -55,13 +53,13 @@ const close = () => {
   keyPick.value = undefined
 }
 
-defineExpose({
-  open,
-  close,
-})
-
 const pickColor = (event: Event) => {
   const color = (event.target as HTMLInputElement).value
   emit('pick-color', color, keyPick.value)
 }
+
+defineExpose({
+  open,
+  close,
+})
 </script>
