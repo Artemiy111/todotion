@@ -20,8 +20,9 @@ export default defineStore('cards', () => {
       body,
     })
 
-    await rowsStore.createOne({ order: 1, todoCardId: data.id })
+    // await rowsStore.createOne({ order: 1, todoCardId: data.id })
 
+    await rowsStore.getAll()
     await getAll()
 
     return data

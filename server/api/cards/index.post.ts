@@ -1,24 +1,23 @@
 import validateBody from '~/server/validateBody'
 import { CardCreateSchema } from '~/schema'
 
-import prisma from '~/server/db/prisma'
+import prisma, { type TodoCard } from '~/server/db/prisma'
 
-export default defineEventHandler(async event => {
+export default defineEventHandler(async (event): Promise<TodoCard> => {
   const body = validateBody(CardCreateSchema, await readBody(event))
 
-  await prisma.todoCard
-    .updateMany({
+  try {
+    const updateOrder = prisma.todoCard.updateMany({
       where: { order: { gte: body.order } },
       data: { order: { increment: 1 } },
     })
-    .catch(() => {
-      throw createError({
-        message: `Could not increment order in cards where order >= ${body.order}`,
-        statusCode: 500,
-      })
+
+    const createCardWithRow = prisma.todoCard.create({
+      data: { ...body, todoRows: { create: { order: 1 } } },
     })
 
-  return await prisma.todoCard.create({ data: body }).catch(() => {
+    return (await prisma.$transaction([updateOrder, createCardWithRow]))[1]
+  } catch (e) {
     throw createError({ message: 'Could not create card', statusCode: 500 })
-  })
+  }
 })

@@ -1,20 +1,12 @@
-import prisma from '~/server/db/prisma'
+import prisma, { type TodoRow } from '~/server/db/prisma'
 
-export default defineEventHandler(async event => {
+export default defineEventHandler(async (event): Promise<TodoRow> => {
   const id = event.context.params.id as string
 
-  const row = await prisma.todoRow.findUnique({ where: { id } }).catch(e => {
-    throw e
-  })
+  const row = await prisma.todoRow.findUniqueOrThrow({ where: { id } })
 
-  if (row === null)
-    throw createError({
-      message: `No such row with id: ${id}`,
-      statusCode: 500,
-    })
-
-  await prisma.todoRow
-    .updateMany({
+  try {
+    const updateOrder = prisma.todoRow.updateMany({
       where: {
         order: {
           gt: row.order,
@@ -26,17 +18,14 @@ export default defineEventHandler(async event => {
         },
       },
     })
-    .catch(() => {
-      throw createError({
-        message: `Could not decrement order in rows where order > ${row.order}`,
-        statusCode: 500,
-      })
-    })
 
-  return await prisma.todoRow.delete({ where: { id } }).catch(() => {
+    const deleteRow = prisma.todoRow.delete({ where: { id } })
+
+    return (await prisma.$transaction([updateOrder, deleteRow]))[1]
+  } catch (e) {
     throw createError({
       message: `Could not delete row with id: ${id}`,
       statusCode: 500,
     })
-  })
+  }
 })
