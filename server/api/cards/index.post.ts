@@ -4,7 +4,7 @@ import { CardCreateSchema } from '~/schema'
 import prisma, { type TodoCard } from '~/server/db/prisma'
 
 export default defineEventHandler(async (event): Promise<TodoCard> => {
-  const body = validateBody(CardCreateSchema, await readBody(event))
+  const body = await validateBody(event, CardCreateSchema)
 
   try {
     const updateOrder = prisma.todoCard.updateMany({

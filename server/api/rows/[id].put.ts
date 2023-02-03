@@ -6,7 +6,7 @@ import prisma, { type TodoRow } from '~/server/db/prisma'
 export default defineEventHandler(async (event): Promise<TodoRow> => {
   const id = event.context.params.id as string
 
-  const body = validateBody(RowUpdateSchema, await readBody(event))
+  const body = await validateBody(event, RowUpdateSchema)
 
   try {
     const updateRow = prisma.todoRow.update({ where: { id }, data: body })

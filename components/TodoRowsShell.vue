@@ -35,8 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TodoRow } from '.prisma/client'
-import type { RowCreate, RowUpdate } from '~/types'
+import type { TodoRow, RowCreate, RowUpdate } from '~/types'
 
 import TodoRowComponent from '~/components/TodoRow.vue'
 // import Draggable from 'vuedraggable'

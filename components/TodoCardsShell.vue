@@ -51,12 +51,10 @@
 import Draggable from 'vuedraggable'
 import ColorPicker from '~/components/ColorPicker.vue'
 
-import type { TodoCard } from '.prisma/client'
-import type { CardUpdate } from '~/types'
+import type { TodoCard, CardUpdate } from '~/types'
+import { FetchError } from 'ofetch'
 
 import useCardsStore from '~/store/cards'
-
-import { FetchError } from 'ofetch'
 
 import { useToast } from 'vue-toastification'
 

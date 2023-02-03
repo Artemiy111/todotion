@@ -4,7 +4,7 @@ import { RowCreateSchema } from '~/schema'
 import prisma, { type TodoRow } from '~/server/db/prisma'
 
 export default defineEventHandler(async (event): Promise<TodoRow> => {
-  const body = validateBody(RowCreateSchema, await readBody(event))
+  const body = await validateBody(event, RowCreateSchema)
 
   try {
     const updateOrder = prisma.todoRow.updateMany({
