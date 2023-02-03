@@ -25,6 +25,9 @@
         @change="updateCardTitle"
       />
     </div>
+    <TodoCardButton :color="props.color" @click="downloadMarkdown"
+      ><FontAwesomeIcon :icon="['fas', 'download']" class="text-lg [user-select:none]"
+    /></TodoCardButton>
     <TodoCardButton :color="props.color" @click="pickColor"
       ><FontAwesomeIcon :icon="['fas', 'brush']" class="text-lg [user-select:none]"
     /></TodoCardButton>
@@ -81,5 +84,21 @@ const deleteCard = () => {
 const updateCardTitle = (event: Event) => {
   const newTitle = (event.target as HTMLInputElement).value
   emit('update', { title: newTitle })
+}
+
+const downloadMarkdown = async () => {
+  const { filename, md } = await $fetch(`/api/download/${props.id}`)
+
+  const blob = new Blob([md])
+  const url = URL.createObjectURL(blob)
+
+  const a = document.createElement('a')
+  a.style.display = 'none'
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  URL.revokeObjectURL(url)
+  a.remove()
 }
 </script>
