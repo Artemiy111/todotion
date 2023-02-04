@@ -16,7 +16,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Todotion',
-      meta: [{ name: 'description', content: 'Todotion, the to-do app' }],
+      meta: [
+        {
+          name: 'description',
+          content: 'Todotion, the to-do app',
+          charset: 'utf-8',
+        },
+      ],
+
       htmlAttrs: {
         lang: 'ru',
       },

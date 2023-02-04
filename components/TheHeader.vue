@@ -3,18 +3,21 @@
     <div class="mb-5 flex items-center justify-between rounded-b-xl">
       <span class="text-xl font-bold">Todotion</span>
       <div class="flex items-center gap-6">
-        <button role="button" class="flex items-center" title="guide">
+        <button role="button" class="flex items-center" title="guide" @click="openGuide">
           <FontAwesomeIcon
             :icon="['far', 'circle-question']"
             class="aspect-square cursor-pointer text-2xl hover:opacity-70 active:opacity-50"
-            @click="openGuide"
           />
         </button>
-        <button role="button" class="flex items-center" title="color mode">
+        <button
+          role="button"
+          class="flex items-center"
+          title="color mode"
+          @click="emit('toggle-dark')"
+        >
           <FontAwesomeIcon
             :icon="['far', 'moon']"
             class="aspect-square cursor-pointer text-2xl hover:opacity-70 active:opacity-50"
-            @click="emit('toggle-dark')"
           />
         </button>
         <a title="github" href="https://github.com/Artemiy111/todotion" class="flex items-center">

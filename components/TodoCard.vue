@@ -1,13 +1,15 @@
 <template>
   <div
     ref="todoCardRef"
-    class="flex h-12 items-center justify-between rounded-xl"
+    tabindex="0"
+    class="flex h-12 items-center justify-between rounded-xl outline-none"
     :class="[
       ``,
       isSelected
         ? `bg-${props.color}-100 dark:bg-${props.color}-700`
-        : `bg-${props.color}-50 dark:bg-${props.color}-800 cursor-pointer`,
+        : `focus:bg-${props.color}-200 dark:focus:bg-${props.color}-600 bg-${props.color}-50 dark:bg-${props.color}-800 hover:bg-${props.color}-100 dark:hover:bg-${props.color}-700 cursor-pointer`,
     ]"
+    @keydown.self.space.enter="selectCard"
   >
     <div
       class="flex h-full w-full items-center gap-2 rounded-l-xl px-3"
