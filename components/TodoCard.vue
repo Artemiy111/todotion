@@ -15,7 +15,10 @@
       @click="selectCard"
     >
       <slot name="drag-handler"></slot>
+
       <input
+        title="card title"
+        area-label="card title"
         type="text"
         :class="!isSelected ? 'cursor-pointer' : ''"
         class="h-full w-full bg-transparent outline-none"
@@ -25,14 +28,21 @@
         @change="updateCardTitle"
       />
     </div>
-    <TodoCardButton :color="props.color" @click="downloadMarkdown"
+
+    <TodoCardButton title="download card" :color="props.color" @click="downloadMarkdown"
       ><FontAwesomeIcon :icon="['fas', 'download']" class="text-lg [user-select:none]"
     /></TodoCardButton>
-    <TodoCardButton :color="props.color" @click="pickColor"
+
+    <TodoCardButton title="pick color" :color="props.color" @click="pickColor"
       ><FontAwesomeIcon :icon="['fas', 'brush']" class="text-lg [user-select:none]"
     /></TodoCardButton>
 
-    <TodoCardButton :color="props.color" class="rounded-r-xl" @click="deleteCard">
+    <TodoCardButton
+      title="delete card"
+      :color="props.color"
+      class="rounded-r-xl"
+      @click="deleteCard"
+    >
       <FontAwesomeIcon :icon="['fas', 'xmark']" class="text-xl [user-select:none]"
     /></TodoCardButton>
   </div>

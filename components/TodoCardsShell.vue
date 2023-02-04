@@ -35,6 +35,8 @@
           >
             <template #drag-handler>
               <img
+                width="24"
+                height="24"
                 src="~/assets/drag.png"
                 alt=""
                 class="drag-handler h-6 cursor-grab [user-select:none] dark:invert"

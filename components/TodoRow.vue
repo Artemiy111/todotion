@@ -4,6 +4,7 @@
       class="flex h-12 items-center gap-2 rounded-xl bg-slate-50 px-3 focus-within:bg-slate-100 dark:bg-slate-800 dark:focus-within:bg-slate-700"
     >
       <input
+        title="row completed status"
         type="checkbox"
         class="cursor-pointer"
         :checked="props.row.isCompleted"
@@ -11,8 +12,9 @@
       />
       <input
         ref="inputRef"
-        class="h-full w-full bg-inherit outline-none"
+        title="row text"
         type="text"
+        class="h-full w-full bg-inherit outline-none"
         :placeholder="props.placeholder"
         :value="props.row.text"
         @input="handleInput"

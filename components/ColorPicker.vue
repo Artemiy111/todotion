@@ -7,8 +7,8 @@
     <div v-for="color in props.colors" :key="color">
       <label class="block h-full w-full">
         <input
-          type="radio"
           name="color"
+          type="radio"
           :value="color"
           :checked="color === defaultColor"
           class="peer hidden"
