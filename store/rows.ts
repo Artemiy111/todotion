@@ -1,50 +1,57 @@
-import type { TodoRow } from '@prisma/client'
+import type { TodoRow, RowCreate, RowUpdate } from '~/types'
 
 import { defineStore } from 'pinia'
-import type { RowCreate, RowUpdate } from '~/types'
 
 export default defineStore('rows', () => {
-  const rows = ref([] as TodoRow[])
+  const rows = ref<TodoRow[]>([])
 
-  async function getAll() {
+  async function getAll(): Promise<TodoRow[]> {
     const data: TodoRow[] = await $fetch('/api/rows')
     rows.value = data
-    return rows.value
+
+    return data
   }
 
-  function getOne(rowId: string) {
-    const row: TodoRow | undefined = rows.value.find(row => row.id === rowId)
+  function getOne(rowId: string): TodoRow {
+    const row = rows.value.find(row => row.id === rowId)
+    if (row === undefined)
+      throw createError({ message: `No row with id: ${rowId}`, statusCode: 400 })
+
     return row
   }
 
-  async function createOne(body: RowCreate) {
+  async function createOne(body: RowCreate): Promise<TodoRow> {
     const data: TodoRow = await $fetch('/api/rows', {
       method: 'POST',
       body,
     })
     await getAll()
+
     return data
   }
 
-  async function updateOne(id: string, body: RowUpdate) {
+  async function updateOne(id: string, body: RowUpdate): Promise<TodoRow> {
     const data: TodoRow = await $fetch(`/api/rows/${id}`, {
       method: 'PUT',
       body,
     })
     await getAll()
+
     return data
   }
 
-  async function deleteOne(id: string) {
+  async function deleteOne(id: string): Promise<TodoRow> {
     const data: TodoRow = await $fetch(`/api/rows/${id}`, {
       method: 'DELETE',
     })
     await getAll()
+
     return data
   }
 
   return {
     rows,
+
     getAll,
     getOne,
     createOne,

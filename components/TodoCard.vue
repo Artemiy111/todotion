@@ -40,6 +40,9 @@
 
 <script setup lang="ts">
 import type { CardUpdate } from '~/types'
+import { FetchError } from 'ofetch'
+
+import { useToast } from 'vue-toastification'
 
 const props = defineProps<{
   id: string
@@ -62,6 +65,8 @@ const emit = defineEmits<{
 }>()
 
 const todoCardRef = ref<HTMLDivElement | null>(null)
+
+const toast = useToast()
 
 const pickColor = () => {
   if (!todoCardRef.value) return
@@ -87,18 +92,22 @@ const updateCardTitle = (event: Event) => {
 }
 
 const downloadMarkdown = async () => {
-  const { filename, md } = await $fetch(`/api/download/${props.id}`)
+  try {
+    const { filename, md } = await $fetch(`/api/download/${props.id}`)
 
-  const blob = new Blob([md])
-  const url = URL.createObjectURL(blob)
+    const blob = new Blob([md])
+    const url = URL.createObjectURL(blob)
 
-  const a = document.createElement('a')
-  a.style.display = 'none'
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  URL.revokeObjectURL(url)
-  a.remove()
+    const a = document.createElement('a')
+    a.style.display = 'none'
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    URL.revokeObjectURL(url)
+    a.remove()
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 </script>

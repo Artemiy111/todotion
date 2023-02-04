@@ -48,6 +48,8 @@
 </template>
 
 <script setup lang="ts">
+// ? Слишком быстрый рендер draggable
+
 import Draggable from 'vuedraggable'
 import ColorPicker from '~/components/ColorPicker.vue'
 
@@ -55,12 +57,9 @@ import type { TodoCard, CardUpdate } from '~/types'
 import { FetchError } from 'ofetch'
 
 import useCardsStore from '~/store/cards'
-
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
-// ? Слишком быстрый рендер
-
 const store = useCardsStore()
 
 const emit = defineEmits<{
