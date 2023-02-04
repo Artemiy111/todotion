@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-family: Ubuntu;
+  }
   html.dark {
     color: theme('colors.white');
     background-color: theme('colors.slate.900');
