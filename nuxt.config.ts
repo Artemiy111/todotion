@@ -16,16 +16,26 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Todotion',
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+
       meta: [
         {
           name: 'description',
-          content: 'Todotion, the to-do app',
-          charset: 'utf-8',
+          content: 'Todotion, приложение для заметок',
         },
+        { name: 'author', content: 'Naboishikov Artemiy' },
+
+        { property: 'og:site:name', content: 'Todotion' },
+        { property: 'og:title', content: 'Todotion' },
+        { property: 'og:description', content: 'Todotion, приложение для заметок' },
+        { property: 'og:image', content: '/og.jpg' },
+        { property: 'og:type', content: 'website' },
       ],
 
       htmlAttrs: {
-        lang: 'ru',
+        lang: 'ru-Ru',
+        prefix: 'og: https://ogp.me/ns#',
       },
     },
   },

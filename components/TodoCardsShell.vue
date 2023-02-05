@@ -102,7 +102,7 @@ type OrderBy =
 
 const orderBy = ref<OrderBy>('order')
 
-const sortedCards = computed(() => {
+const sortedCards = computed<TodoCard[]>(() => {
   switch (orderBy.value) {
     case 'order':
       return store.cards.sort((c1, c2) => c1.order - c2.order)
@@ -124,7 +124,6 @@ const sortedCards = computed(() => {
       )
   }
 })
-
 //
 
 const popupColorPicker = ref<InstanceType<typeof AppPopup> | null>(null)
