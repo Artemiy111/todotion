@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isOpen"
+    v-if="props.isOpen"
     ref="colorPickerRef"
     tabindex="1"
     class="grid w-fit grid-cols-4 gap-4 rounded-lg bg-white p-5 shadow-2xl dark:bg-slate-800"
@@ -27,9 +27,9 @@
 </template>
 
 <script setup lang="ts">
-import { onClickOutside, useEventListener } from '@vueuse/core'
-
 const props = defineProps<{
+  isOpen: boolean
+  popupKey?: string
   defaultColor: string
   colors: string[]
 }>()
@@ -38,34 +38,24 @@ const emit = defineEmits<{
   (e: 'pick-color', color: string, key?: string): void
 }>()
 
+//
+
 const colorPickerRef = ref<HTMLDivElement | null>(null)
 
-const keyPick = ref<string>()
+watch(
+  () => props.isOpen,
+  () => {
+    if (props.isOpen) nextTick(() => colorPickerRef.value?.focus())
+  }
+)
 
-const isOpen = ref(false)
+//
 
 const isColorPicked = (color: string) => color === props.defaultColor
 
-onClickOutside(colorPickerRef, () => close())
-
-useEventListener('keydown', event => {
-  if (event.code === 'Escape' && isOpen.value) close()
-})
-
-const open = (key?: string) => {
-  isOpen.value = true
-  keyPick.value = key
-  nextTick(() => colorPickerRef.value?.focus())
-}
-
-const close = () => {
-  isOpen.value = false
-  keyPick.value = undefined
-}
-
 const pickColor = (event: Event) => {
   const color = (event.target as HTMLInputElement).value
-  emit('pick-color', color, keyPick.value)
+  emit('pick-color', color, props.popupKey)
 }
 
 const changeChecked = (event: KeyboardEvent) => {
@@ -73,9 +63,4 @@ const changeChecked = (event: KeyboardEvent) => {
   const input = div.previousSibling as HTMLInputElement
   if (!input.checked) input.click()
 }
-
-defineExpose({
-  open,
-  close,
-})
 </script>

@@ -1,14 +1,17 @@
 <template>
   <div class="flex flex-col gap-6 rounded-xl">
     <Teleport to="body"
-      ><ColorPicker
-        ref="colorPickerComponent"
-        :default-color="defaultColor"
-        :colors="colors"
-        class="absolute"
-        :style="{ top: pickerPosition.top + 'px', left: pickerPosition.left + 'px' }"
-        @pick-color="pickColor"
-    /></Teleport>
+      ><AppPopup ref="popupColorPicker" v-slot="{ isOpen, popupKey }"
+        ><AppPopupColorPicker
+          :is-open="isOpen"
+          :popup-key="popupKey"
+          :default-color="defaultColor"
+          :colors="colors"
+          class="absolute"
+          :style="{ top: pickerPosition.top + 'px', left: pickerPosition.left + 'px' }"
+          @close="popupColorPicker?.close()"
+          @pick-color="pickColor" /></AppPopup
+    ></Teleport>
 
     <TodoCardCreate placeholder="Новая карточка" @create="createCard($event)" />
     <template v-if="store.cards.length">
@@ -53,7 +56,7 @@
 // ? Слишком быстрый рендер draggable
 
 import Draggable from 'vuedraggable'
-import ColorPicker from '~/components/ColorPicker.vue'
+import AppPopup from '~/components/AppPopup.vue'
 
 import type { TodoCard, CardUpdate } from '~/types'
 import { FetchError } from 'ofetch'
@@ -72,7 +75,7 @@ onMounted(() => {
   store.getAll()
 })
 
-const colorPickerComponent = ref<InstanceType<typeof ColorPicker> | null>(null)
+const popupColorPicker = ref<InstanceType<typeof AppPopup> | null>(null)
 
 const defaultColor = ref('slate')
 
@@ -100,7 +103,7 @@ const openColorPicker = (
 ) => {
   defaultColor.value = prevColor
   pickerPosition.value = position
-  colorPickerComponent.value?.open(key)
+  popupColorPicker.value?.open(key)
 }
 
 const pickColor = async (color: string, cardId?: string) => {

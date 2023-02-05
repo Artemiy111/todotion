@@ -29,21 +29,28 @@
     </div>
     <div class="h-[2px] w-full bg-slate-100 dark:bg-slate-800"></div>
   </header>
+
   <Teleport to="body">
-    <AppGuide ref="guideComponent" />
+    <AppPopup ref="popup" v-slot="{ isOpen }"
+      ><AppPopupGuide :is-open="isOpen" @close="closeGuide" />
+    </AppPopup>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import AppGuide from '~/components/AppGuide.vue'
+import AppPopup from '~/components/AppPopup.vue'
 
 const emit = defineEmits<{
   (e: 'toggle-dark'): void
 }>()
 
-const guideComponent = ref<InstanceType<typeof AppGuide> | null>(null)
+const popup = ref<InstanceType<typeof AppPopup> | null>(null)
 
 const openGuide = () => {
-  guideComponent.value?.open()
+  popup.value?.open()
+}
+
+const closeGuide = () => {
+  popup.value?.close()
 }
 </script>
