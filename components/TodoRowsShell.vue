@@ -35,14 +35,17 @@ import TodoRowComponent from '~/components/TodoRow.vue'
 import Draggable from 'vuedraggable'
 
 import type { TodoRow, RowCreate, RowUpdate, DraggableChangeEvent } from '~/types'
+import { FetchError } from 'ofetch'
 
 import useRowsStore from '~/store/rows'
-
-const store = useRowsStore()
+import { useToast } from 'vue-toastification'
 
 const props = defineProps<{
   selectedCardId?: string
 }>()
+
+const store = useRowsStore()
+const toast = useToast()
 
 onMounted(() => {
   store.getAll()
@@ -111,8 +114,12 @@ const updateAndCreateRows = async (
   dataUpdate: RowUpdate,
   dataCreate: RowCreate
 ) => {
-  await updateRow(rowIdUpdate, dataUpdate, false)
-  await createRow(dataCreate, true, 0)
+  try {
+    await updateRow(rowIdUpdate, dataUpdate, false)
+    await createRow(dataCreate, true, 0)
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 
 const updateAndDeleteRows = async (
@@ -120,17 +127,20 @@ const updateAndDeleteRows = async (
   dataUpdate: RowUpdate,
   rowIdDelete: string
 ) => {
-  const rowBeforeUpdate = store.getOne(rowIdUpdate)
-  await updateRow(rowIdUpdate, dataUpdate, false)
-  await focusRow(rowBeforeUpdate.id, rowBeforeUpdate.text.length)
-  await deleteRow(rowIdDelete, false)
+  try {
+    const rowBeforeUpdate = store.getOne(rowIdUpdate)
+    await updateRow(rowIdUpdate, dataUpdate, false)
+    await focusRow(rowBeforeUpdate.id, rowBeforeUpdate.text.length)
+    await deleteRow(rowIdDelete, false)
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 
 const focusRow = async (rowId: string, cursorPlace?: number) => {
   console.log('focus ' + rowId, cursorPlace)
   listRowComponents.value?.forEach(listRowComponent => {
-    if (listRowComponent.props.row.id === rowId) {
-      listRowComponent.props.row.id
+    if (listRowComponent?.props?.row.id === rowId) {
       listRowComponent.focus(cursorPlace)
     }
   })
