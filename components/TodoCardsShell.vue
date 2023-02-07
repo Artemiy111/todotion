@@ -36,9 +36,9 @@
       v-if="store.cards.length"
       class="flex flex-col gap-3"
       :list="sortedCards"
+      :animation="100"
       tag="div"
       item-key="id"
-      :animation="100"
       handle=".drag-handler"
       @change="changeCardOrder"
     >
@@ -55,14 +55,7 @@
           @open-color-picker="openColorPicker"
         >
           <template #drag-handler>
-            <img
-              width="24"
-              height="24"
-              src="~/assets/drag.png"
-              alt=""
-              class="h-6 cursor-grab [user-select:none] dark:invert"
-              :class="orderBy === 'order' ? 'drag-handler' : 'hidden'"
-            />
+            <DragHandler :is-hidden="orderBy !== 'order'" handler-class="drag-handler" />
           </template>
         </TodoCard>
       </template>
@@ -71,12 +64,12 @@
 </template>
 
 <script setup lang="ts">
-// ? Слишком быстрый рендер draggable
+// ? Order сбрасывается пока идёт асинхронный запрос
 
 import Draggable from 'vuedraggable'
 import AppPopup from '~/components/AppPopup.vue'
 
-import type { TodoCard, CardUpdate } from '~/types'
+import type { TodoCard, CardUpdate, DraggableChangeEvent } from '~/types'
 import { FetchError } from 'ofetch'
 
 import useCardsStore from '~/store/cards'
@@ -92,6 +85,8 @@ const emit = defineEmits<{
 onMounted(() => {
   store.getAll()
 })
+
+// order by
 
 type OrderBy =
   | 'order'
@@ -124,12 +119,13 @@ const sortedCards = computed<TodoCard[]>(() => {
       )
   }
 })
-//
+
+// colors
 
 const popupColorPicker = ref<InstanceType<typeof AppPopup> | null>(null)
+const pickerPosition = ref({ top: 0, left: 0 })
 
 const defaultColor = ref('slate')
-
 const colors = [
   'slate',
   'neutral',
@@ -144,8 +140,6 @@ const colors = [
   'purple',
   'pink',
 ]
-
-const pickerPosition = ref({ top: 0, left: 0 })
 
 const openColorPicker = (
   prevColor: string,
@@ -162,11 +156,8 @@ const pickColor = async (color: string, cardId?: string) => {
   await store.updateOne(cardId, { color })
 }
 
-//
+// draggable
 
-type DraggableChangeEvent<T> = {
-  moved: { element: T; oldIndex: number; newIndex: number }
-}
 const changeCardOrder = async (event: DraggableChangeEvent<TodoCard>) => {
   const card = event.moved.element
   const newOrder = event.moved.newIndex + 1
@@ -184,7 +175,7 @@ const selectCard = (cardId: string) => {
   emit('select-card', cardId)
 }
 
-//
+// crud
 
 const createCard = async (title: string, order?: number) => {
   if (title.trim() === '') return

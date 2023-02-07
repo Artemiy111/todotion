@@ -1,34 +1,40 @@
 <template>
-  <div
+  <Draggable
     v-if="rowsOfSelectedCardByOrder.length"
     :list="rowsOfSelectedCardByOrder"
+    :animation="100"
     class="flex flex-col gap-3 rounded-xl"
     item-key="id"
     tag="div"
+    handle=".drag-handler"
+    @change="changeRowOrder"
   >
-    <TodoRow
-      v-for="(row, index) in rowsOfSelectedCardByOrder"
-      :key="row.id"
-      ref="listRowComponents"
-      :row="row"
-      :prev-row="getSurroundingRow(index).value.prev"
-      :next-row="getSurroundingRow(index).value.next"
-      :placeholder="row.order === 1 ? 'Начните писать' : ''"
-      @create="createRow"
-      @update="updateRow"
-      @delete="deleteRow"
-      @update-and-create="updateAndCreateRows"
-      @update-and-delete="updateAndDeleteRows"
-      @focus="focusRow"
-    >
-    </TodoRow>
-  </div>
+    <template #item="{ element: row, index }">
+      <TodoRow
+        :key="row.id"
+        :ref="el => (listRowComponents[index] = el as any)"
+        :row="row"
+        :prev-row="getSurroundingRow(index).value.prev"
+        :next-row="getSurroundingRow(index).value.next"
+        :placeholder="row.order === 1 ? 'Начните писать' : ''"
+        @create="createRow"
+        @update="updateRow"
+        @delete="deleteRow"
+        @update-and-create="updateAndCreateRows"
+        @update-and-delete="updateAndDeleteRows"
+        @focus="focusRow"
+      >
+        <template #drag-handler> <DragHandler handler-class="drag-handler" /></template>
+      </TodoRow>
+    </template>
+  </Draggable>
 </template>
 
 <script setup lang="ts">
 import TodoRowComponent from '~/components/TodoRow.vue'
+import Draggable from 'vuedraggable'
 
-import type { TodoRow, RowCreate, RowUpdate } from '~/types'
+import type { TodoRow, RowCreate, RowUpdate, DraggableChangeEvent } from '~/types'
 
 import useRowsStore from '~/store/rows'
 
@@ -42,7 +48,13 @@ onMounted(() => {
   store.getAll()
 })
 
-const listRowComponents = ref<Array<InstanceType<typeof TodoRowComponent>> | null>(null)
+const listRowComponents = ref<Array<InstanceType<typeof TodoRowComponent>>>([])
+
+const changeRowOrder = async (event: DraggableChangeEvent<TodoRow>) => {
+  const row = event.moved.element
+  const newOrder = event.moved.newIndex + 1
+  await store.updateOne(row.id, { order: newOrder })
+}
 
 const getSurroundingRow = (index: number) =>
   computed(() => {

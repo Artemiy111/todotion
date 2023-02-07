@@ -34,7 +34,7 @@ export default defineNuxtConfig({
       ],
 
       htmlAttrs: {
-        lang: 'ru-Ru',
+        lang: 'ru-RU',
         prefix: 'og: https://ogp.me/ns#',
       },
     },
