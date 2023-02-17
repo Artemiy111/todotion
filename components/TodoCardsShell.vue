@@ -13,28 +13,13 @@
           @pick-color="pickColor" /></AppPopup
     ></Teleport>
 
-    <div class="mb-4 flex flex-wrap items-center gap-2">
-      <span class="px-3">Сортировать по</span>
-      <select
-        v-model="orderBy"
-        title="order by"
-        class="w-full cursor-pointer appearance-none rounded-xl bg-slate-50 py-2 px-3 outline-none hover:bg-slate-100 focus:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 dark:focus:bg-slate-700 md:w-auto"
-      >
-        <option value="order">порядку</option>
-
-        <option value="time create new">созданию | от новых</option>
-        <option value="time create old">созданию | от старых</option>
-
-        <option value="time update new">обновлению | от новых</option>
-        <option value="time update old">обновлению | от старых</option>
-      </select>
-    </div>
+    <TodoCardsSelectOrder v-model="orderBy" />
 
     <TodoCardCreate placeholder="Новая карточка" @create="createCard($event)" />
 
     <Draggable
       v-if="store.cards.length"
-      class="flex flex-col gap-3"
+      class="flex flex-col gap-3 overflow-auto"
       :list="sortedCards"
       :animation="100"
       tag="div"
@@ -60,6 +45,9 @@
         </TodoCard>
       </template>
     </Draggable>
+    <template v-else>
+      <TodoCardSkeleton v-for="i in 3" :key="i" />
+    </template>
   </div>
 </template>
 
@@ -70,30 +58,33 @@ import Draggable from 'vuedraggable'
 import AppPopup from '~/components/AppPopup.vue'
 
 import type { TodoCard, CardUpdate, DraggableChangeEvent } from '~/types'
+import type { OrderBy } from '~/components/TodoCardsSelectOrder.vue'
+import type { Color } from '~/components/AppPopupColorPicker.vue'
 import { FetchError } from 'ofetch'
 
 import useCardsStore from '~/store/cards'
 import { useToast } from 'vue-toastification'
+import TodoCardsService from '~/api/TodoCardsService'
 
 const toast = useToast()
 const store = useCardsStore()
+
+const cards = ref<TodoCard[]>([])
 
 const emit = defineEmits<{
   (e: 'select-card', cardId?: string): void
 }>()
 
-onMounted(() => {
+onMounted(async () => {
   store.getAll()
+  try {
+    cards.value = await TodoCardsService.getAll()
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.message)
+  }
 })
 
 // order by
-
-type OrderBy =
-  | 'order'
-  | 'time create new'
-  | 'time create old'
-  | 'time update new'
-  | 'time update old'
 
 const orderBy = ref<OrderBy>('order')
 
@@ -126,7 +117,7 @@ const popupColorPicker = ref<InstanceType<typeof AppPopup> | null>(null)
 const pickerPosition = ref({ top: 0, left: 0 })
 
 const defaultColor = ref('slate')
-const colors = [
+const colors: Color[] = [
   'slate',
   'neutral',
   'rose',
@@ -153,7 +144,17 @@ const openColorPicker = (
 
 const pickColor = async (color: string, cardId?: string) => {
   if (cardId === undefined) return
-  await store.updateOne(cardId, { color })
+  try {
+    await store.updateOne(cardId, { color })
+    // await TodoCardsService.updateOne(cardId, { color })
+    // cards.value.forEach((card, index) => {
+    //   if (card.id === cardId) {
+    //     cards.value[index] = { ...card, color }
+    //   }
+    // })
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 
 // draggable
@@ -161,7 +162,11 @@ const pickColor = async (color: string, cardId?: string) => {
 const changeCardOrder = async (event: DraggableChangeEvent<TodoCard>) => {
   const card = event.moved.element
   const newOrder = event.moved.newIndex + 1
-  await store.updateOne(card.id, { order: newOrder })
+  try {
+    await store.updateOne(card.id, { order: newOrder })
+  } catch (e) {
+    if (e instanceof FetchError) toast.error(e.data.message)
+  }
 }
 
 //

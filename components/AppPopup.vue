@@ -1,5 +1,5 @@
 <template v-if="isOpen">
-  <div ref="popup">
+  <div ref="popup" class="z-50">
     <slot :is-open="isOpen" :popup-key="popupKey"></slot>
   </div>
 </template>

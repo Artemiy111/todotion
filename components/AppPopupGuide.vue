@@ -2,7 +2,7 @@
   <div
     v-if="props.isOpen"
     ref="guideRef"
-    class="absolute top-20 left-1/2 z-50 mx-auto w-[700px] rounded-lg bg-white p-5 shadow-2xl [transform:translateX(-50%)] dark:bg-slate-800 sm:max-w-[calc(100%-4rem)] lg:w-[600px]"
+    class="absolute top-20 left-1/2 mx-auto w-[700px] rounded-lg bg-white p-5 shadow-2xl [transform:translateX(-50%)] dark:bg-slate-800 sm:max-w-[calc(100%-4rem)] lg:w-[600px]"
   >
     <button
       tabindex="1"

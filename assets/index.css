@@ -5,12 +5,17 @@
 @layer base {
   html {
     font-family: Ubuntu;
+    scrollbar-gutter: stable;
   }
   html.dark {
     color: theme('colors.white');
     background-color: theme('colors.slate.900');
   }
-
+  @media screen(lg) {
+    html {
+      scrollbar-gutter: auto;
+    }
+  }
   @media screen(sm) {
     html {
       font-size: 14px;

@@ -2,7 +2,7 @@
   <div
     ref="todoCardRef"
     tabindex="0"
-    class="flex h-12 items-center justify-between rounded-xl outline-none"
+    class="flex h-12 min-h-[3rem] items-center justify-between rounded-xl outline-none"
     :class="[
       ``,
       isSelected

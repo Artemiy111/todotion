@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto flex min-h-[100vh] flex-col gap-5 py-5 px-5">
+  <div class="container mx-auto flex flex-col gap-5 py-5 px-5">
     <TheHeader @toggle-dark="toggleDark" />
     <TheMain />
   </div>

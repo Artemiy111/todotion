@@ -27,15 +27,29 @@
 </template>
 
 <script setup lang="ts">
+export type Color =
+  | 'slate'
+  | 'neutral'
+  | 'rose'
+  | 'orange'
+  | 'yellow'
+  | 'lime'
+  | 'green'
+  | 'teal'
+  | 'blue'
+  | 'indigo'
+  | 'purple'
+  | 'pink'
+
 const props = defineProps<{
   isOpen: boolean
   popupKey?: string
   defaultColor: string
-  colors: string[]
+  colors: Color[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'pick-color', color: string, key?: string): void
+  (e: 'pick-color', color: Color, key?: string): void
 }>()
 
 //
@@ -51,10 +65,10 @@ watch(
 
 //
 
-const isColorPicked = (color: string) => color === props.defaultColor
+const isColorPicked = (color: Color) => color === props.defaultColor
 
 const pickColor = (event: Event) => {
-  const color = (event.target as HTMLInputElement).value
+  const color = (event.target as HTMLInputElement).value as Color
   emit('pick-color', color, props.popupKey)
 }
 
