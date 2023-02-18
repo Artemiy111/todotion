@@ -3,7 +3,7 @@ import type { TodoCard, CardCreate, CardUpdate } from '~/types'
 import { defineStore } from 'pinia'
 import { useRowsStore } from '~/store/rows'
 
-import TodoCardsService from '~~/api/TodoCardsService'
+import TodoCardsService from '~/services/TodoCardsService'
 
 export const useCardsStore = defineStore('cards', () => {
   const rowsStore = useRowsStore()

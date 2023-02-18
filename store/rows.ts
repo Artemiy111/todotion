@@ -2,7 +2,7 @@ import type { TodoRow, RowCreate, RowUpdate } from '~/types'
 
 import { defineStore } from 'pinia'
 
-import TodoRowsService from '~/api/TodoRowsService'
+import TodoRowsService from '~/services/TodoRowsService'
 
 export const useRowsStore = defineStore('rows', () => {
   const rows = ref<TodoRow[]>([])
