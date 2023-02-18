@@ -43,20 +43,21 @@ import TodoRowComponent from '~/components/TodoRow.vue'
 import Draggable from 'vuedraggable'
 
 import type { TodoRow, RowCreate, RowUpdate, DraggableChangeEvent } from '~/types'
-import { FetchError } from 'ofetch'
 
 import { useRowsStore } from '~/store/rows'
-import { useToast } from 'vue-toastification'
-
+import { emitToastForError } from '~/helpers/emitToastForError'
 const props = defineProps<{
   selectedCardId?: string
 }>()
 
 const store = useRowsStore()
-const toast = useToast()
 
-onMounted(() => {
-  store.getAll()
+onMounted(async () => {
+  try {
+    await store.getAll()
+  } catch (e) {
+    emitToastForError(e)
+  }
 })
 
 const listRowComponents = ref<Array<InstanceType<typeof TodoRowComponent>>>([])
@@ -64,7 +65,11 @@ const listRowComponents = ref<Array<InstanceType<typeof TodoRowComponent>>>([])
 const changeRowOrder = async (event: DraggableChangeEvent<TodoRow>) => {
   const row = event.moved.element
   const newOrder = event.moved.newIndex + 1
-  await store.updateOne(row.id, { order: newOrder })
+  try {
+    await store.updateOne(row.id, { order: newOrder })
+  } catch (e) {
+    emitToastForError(e)
+  }
 }
 
 const getSurroundingRow = (index: number) =>
@@ -87,10 +92,15 @@ const createRow = async (
   needFocus = true,
   cursorPlace?: number
 ): Promise<TodoRow> => {
-  const row = await store.createOne(data)
-  if (needFocus) await focusRow(row.id, cursorPlace)
+  try {
+    const row = await store.createOne(data)
+    if (needFocus) await focusRow(row.id, cursorPlace)
 
-  return row
+    return row
+  } catch (e) {
+    emitToastForError(e)
+    throw e
+  }
 }
 
 const updateRow = async (
@@ -99,10 +109,15 @@ const updateRow = async (
   needFocus = true,
   cursorPlace?: number
 ): Promise<TodoRow> => {
-  const row = await store.updateOne(rowId, data)
-  if (typeof data.order === 'number' || needFocus) await focusRow(row.id, cursorPlace)
+  try {
+    const row = await store.updateOne(rowId, data)
+    if (typeof data.order === 'number' || needFocus) await focusRow(row.id, cursorPlace)
 
-  return row
+    return row
+  } catch (e) {
+    emitToastForError(e)
+    throw e
+  }
 }
 
 const deleteRow = async (
@@ -110,11 +125,16 @@ const deleteRow = async (
   needFocus = true,
   cursorPlace?: number
 ): Promise<TodoRow> => {
-  const row = await store.deleteOne(rowId)
-  const prevRow = rowsOfSelectedCardByOrder.value[row.order - 1 - 1]
-  if (needFocus) await focusRow(prevRow.id, cursorPlace)
+  try {
+    const row = await store.deleteOne(rowId)
+    const prevRow = rowsOfSelectedCardByOrder.value[row.order - 1 - 1]
+    if (needFocus) await focusRow(prevRow.id, cursorPlace)
 
-  return row
+    return row
+  } catch (e) {
+    emitToastForError(e)
+    throw e
+  }
 }
 
 const updateAndCreateRows = async (
@@ -126,7 +146,7 @@ const updateAndCreateRows = async (
     await updateRow(rowIdUpdate, dataUpdate, false)
     await createRow(dataCreate, true, 0)
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.data.message)
+    emitToastForError(e)
   }
 }
 
@@ -141,7 +161,7 @@ const updateAndDeleteRows = async (
     await focusRow(rowBeforeUpdate.id, rowBeforeUpdate.text.length)
     await deleteRow(rowIdDelete, false)
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.data.message)
+    emitToastForError(e)
   }
 }
 

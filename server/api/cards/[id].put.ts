@@ -6,7 +6,6 @@ import prisma, { type TodoCard } from '~/server/db/prisma'
 export default defineEventHandler(async (event): Promise<TodoCard> => {
   const id = event.context.params.id as string
   const body = await validateBody(event, CardUpdateSchema)
-
   try {
     const updateCard = prisma.todoCard.update({ where: { id }, data: body })
 

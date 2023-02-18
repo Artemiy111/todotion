@@ -60,12 +60,10 @@ import AppPopup from '~/components/AppPopup.vue'
 import type { TodoCard, CardUpdate, DraggableChangeEvent } from '~/types'
 import type { OrderBy } from '~/components/TodoCardsSelectOrder.vue'
 import type { Color } from '~/components/AppPopupColorPicker.vue'
-import { FetchError } from 'ofetch'
 
 import { useCardsStore } from '~/store/cards'
-import { useToast } from 'vue-toastification'
+import { emitToastForError } from '~/helpers/emitToastForError'
 
-const toast = useToast()
 const store = useCardsStore()
 
 const emit = defineEmits<{
@@ -76,7 +74,7 @@ onMounted(async () => {
   try {
     await store.getAll()
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.message)
+    emitToastForError(e)
   }
 })
 
@@ -143,7 +141,7 @@ const pickColor = async (color: string, cardId?: string) => {
   try {
     await store.updateOne(cardId, { color })
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.data.message)
+    emitToastForError(e)
   }
 }
 
@@ -155,7 +153,7 @@ const changeCardOrder = async (event: DraggableChangeEvent<TodoCard>) => {
   try {
     await store.updateOne(card.id, { order: newOrder })
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.data.message)
+    emitToastForError(e)
   }
 }
 
@@ -179,7 +177,7 @@ const createCard = async (title: string, order?: number) => {
   try {
     await store.createOne({ title, order })
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.data.message)
+    emitToastForError(e)
   }
 }
 
@@ -187,7 +185,7 @@ const updateCard = async (cardId: string, data: CardUpdate) => {
   try {
     await store.updateOne(cardId, data)
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.data.message)
+    emitToastForError(e)
   }
 }
 
@@ -200,7 +198,7 @@ const deleteCard = async (cardId: string) => {
   try {
     await store.deleteOne(cardId)
   } catch (e) {
-    if (e instanceof FetchError) toast.error(e.data.message)
+    emitToastForError(e)
   }
 }
 </script>
