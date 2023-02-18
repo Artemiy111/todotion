@@ -1,9 +1,5 @@
 import type { TodoCard, CardCreate, CardUpdate } from '~/types'
 
-// import useRowsStore from '~/store/rows'
-
-// const rowsStore = useRowsStore()
-
 export default class TodoCardsService {
   static async getAll(): Promise<TodoCard[]> {
     const data: TodoCard[] = await $fetch('/api/cards')
@@ -15,8 +11,6 @@ export default class TodoCardsService {
       method: 'POST',
       body,
     })
-
-    // await rowsStore.getAll()
     return data
   }
 

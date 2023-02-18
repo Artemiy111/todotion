@@ -13,14 +13,14 @@
           @pick-color="pickColor" /></AppPopup
     ></Teleport>
 
-    <TodoCardsSelectOrder v-model="orderBy" />
+    <TodoCardsSelectOrder v-model="orderBy" title="Сортировать по" />
 
     <TodoCardCreate placeholder="Новая карточка" @create="createCard($event)" />
 
     <Draggable
       v-if="store.cards.length"
       class="flex flex-col gap-3 overflow-auto"
-      :list="sortedCards"
+      :list="orderedCards"
       :animation="100"
       tag="div"
       item-key="id"
@@ -62,23 +62,19 @@ import type { OrderBy } from '~/components/TodoCardsSelectOrder.vue'
 import type { Color } from '~/components/AppPopupColorPicker.vue'
 import { FetchError } from 'ofetch'
 
-import useCardsStore from '~/store/cards'
+import { useCardsStore } from '~/store/cards'
 import { useToast } from 'vue-toastification'
-import TodoCardsService from '~/api/TodoCardsService'
 
 const toast = useToast()
 const store = useCardsStore()
-
-const cards = ref<TodoCard[]>([])
 
 const emit = defineEmits<{
   (e: 'select-card', cardId?: string): void
 }>()
 
 onMounted(async () => {
-  store.getAll()
   try {
-    cards.value = await TodoCardsService.getAll()
+    await store.getAll()
   } catch (e) {
     if (e instanceof FetchError) toast.error(e.message)
   }
@@ -88,7 +84,7 @@ onMounted(async () => {
 
 const orderBy = ref<OrderBy>('order')
 
-const sortedCards = computed<TodoCard[]>(() => {
+const orderedCards = computed<TodoCard[]>(() => {
   switch (orderBy.value) {
     case 'order':
       return store.cards.sort((c1, c2) => c1.order - c2.order)
@@ -146,12 +142,6 @@ const pickColor = async (color: string, cardId?: string) => {
   if (cardId === undefined) return
   try {
     await store.updateOne(cardId, { color })
-    // await TodoCardsService.updateOne(cardId, { color })
-    // cards.value.forEach((card, index) => {
-    //   if (card.id === cardId) {
-    //     cards.value[index] = { ...card, color }
-    //   }
-    // })
   } catch (e) {
     if (e instanceof FetchError) toast.error(e.data.message)
   }

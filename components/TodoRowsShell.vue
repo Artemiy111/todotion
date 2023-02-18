@@ -1,6 +1,7 @@
 <template>
   <Draggable
     v-if="rowsOfSelectedCardByOrder.length"
+    v-bind="$attrs"
     :list="rowsOfSelectedCardByOrder"
     :animation="100"
     class="flex flex-col gap-3 rounded-xl"
@@ -28,6 +29,13 @@
       </TodoRow>
     </template>
   </Draggable>
+  <div
+    v-else-if="typeof selectedCardId === 'string' && rowsOfSelectedCardByOrder.length !== 0"
+    v-bind="$attrs"
+    class="flex flex-col gap-3"
+  >
+    <TodoRowSkeleton class="w-full" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -37,7 +45,7 @@ import Draggable from 'vuedraggable'
 import type { TodoRow, RowCreate, RowUpdate, DraggableChangeEvent } from '~/types'
 import { FetchError } from 'ofetch'
 
-import useRowsStore from '~/store/rows'
+import { useRowsStore } from '~/store/rows'
 import { useToast } from 'vue-toastification'
 
 const props = defineProps<{

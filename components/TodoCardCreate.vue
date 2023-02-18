@@ -5,14 +5,14 @@
     >
       <input
         v-model="title"
-        title="new card title"
+        aria-label="new card title"
         type="text"
         class="h-full w-full bg-transparent focus:outline-none"
         :placeholder="props.placeholder"
       />
     </div>
 
-    <TodoCardButton title="create card" class="rounded-r-xl" @click="createCard"
+    <TodoCardButton aria-label="create card" class="rounded-r-xl" @click="createCard"
       ><FontAwesomeIcon :icon="['fas', 'plus']" class="text-xl [user-select:none]"
     /></TodoCardButton>
   </div>

@@ -1,52 +1,96 @@
 import type { TodoCard, CardCreate, CardUpdate } from '~/types'
 
 import { defineStore } from 'pinia'
-import useRowsStore from '~/store/rows'
+import { useRowsStore } from '~/store/rows'
 
-export default defineStore('cards', () => {
-  const cards = ref<TodoCard[]>([])
+import TodoCardsService from '~~/api/TodoCardsService'
+
+export const useCardsStore = defineStore('cards', () => {
   const rowsStore = useRowsStore()
 
-  async function getAll(): Promise<TodoCard[]> {
-    const data: TodoCard[] = await $fetch('/api/cards')
-    cards.value = data
+  const cards = ref<TodoCard[]>([])
 
-    return cards.value
+  async function getAll(): Promise<TodoCard[]> {
+    const allCards: TodoCard[] = await TodoCardsService.getAll()
+    cards.value = allCards
+
+    return allCards
+  }
+
+  function getOne(id: string): TodoCard {
+    const card = cards.value.find(card => card.id === id)
+    if (typeof card === 'undefined')
+      throw createError({ message: `No card with id ${id}`, statusCode: 400 })
+    return card
   }
 
   async function createOne(body: CardCreate): Promise<TodoCard> {
-    const data: TodoCard = await $fetch('/api/cards', {
-      method: 'POST',
-      body,
-    })
+    const createdCard: TodoCard = await TodoCardsService.createOne(body)
 
-    await rowsStore.getAll()
-    await getAll()
-
-    return data
+    Promise.all([getAll(), rowsStore.getAll()])
+    return createdCard
   }
 
   async function updateOne(id: string, body: CardUpdate): Promise<TodoCard> {
-    const data: TodoCard = await $fetch(`/api/cards/${id}`, {
-      method: 'PUT',
-      body,
-    })
-    await getAll()
+    const cardsSnapshot = [...cards.value]
 
-    return data
+    const tryOptimisticUpdate = () => {
+      const card = getOne(id)
+
+      if (typeof body.order === 'number') {
+        if (body.order > card.order) {
+          cards.value = cards.value.map(c => {
+            return c.order > card.order && c.order <= (body.order as number)
+              ? { ...c, order: c.order - 1 }
+              : c
+          })
+        } else if (body.order < card.order) {
+          cards.value = cards.value.map(c => {
+            return c.order >= (body.order as number) && c.order < card.order
+              ? { ...c, order: c.order + 1 }
+              : c
+          })
+        }
+      }
+
+      cards.value = cards.value.map(card => {
+        if (card.id === id) return { ...card, ...body }
+        return card
+      })
+    }
+    tryOptimisticUpdate()
+
+    try {
+      const updatedCard: TodoCard = await TodoCardsService.updateOne(id, body)
+      return updatedCard
+    } catch (e) {
+      cards.value = cardsSnapshot
+      throw e
+    }
   }
 
   async function deleteOne(id: string): Promise<TodoCard> {
-    const data: TodoCard = await $fetch(`/api/cards/${id}`, {
-      method: 'DELETE',
-    })
-    await getAll()
+    const cardsSnapshot = [...cards.value]
 
-    return data
+    const tryOptimisticDelete = () => {
+      const card = getOne(id)
+      cards.value = cards.value.map(c => (c.order > card.order ? { ...c, order: c.order - 1 } : c))
+      cards.value = cards.value.filter(c => c.id !== id)
+    }
+    tryOptimisticDelete()
+
+    try {
+      const deletedCard: TodoCard = await TodoCardsService.deleteOne(id)
+      return deletedCard
+    } catch (e) {
+      cards.value = cardsSnapshot
+      throw e
+    }
   }
 
   return {
     cards,
+
     getAll,
     createOne,
     updateOne,

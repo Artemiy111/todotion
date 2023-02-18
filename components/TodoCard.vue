@@ -19,8 +19,7 @@
       <slot name="drag-handler"></slot>
 
       <input
-        title="card title"
-        area-label="card title"
+        aria-label="card title"
         type="text"
         :class="!isSelected ? 'cursor-pointer' : ''"
         class="h-full w-full bg-transparent outline-none"
@@ -31,16 +30,16 @@
       />
     </div>
 
-    <TodoCardButton title="download card" :color="props.color" @click="downloadMarkdown"
+    <TodoCardButton aria-label="download card" :color="props.color" @click="downloadMarkdown"
       ><FontAwesomeIcon :icon="['fas', 'download']" class="text-lg [user-select:none]"
     /></TodoCardButton>
 
-    <TodoCardButton title="pick color" :color="props.color" @click="pickColor"
+    <TodoCardButton aria-label="pick color" :color="props.color" @click="pickColor"
       ><FontAwesomeIcon :icon="['fas', 'brush']" class="text-lg [user-select:none]"
     /></TodoCardButton>
 
     <TodoCardButton
-      title="delete card"
+      aria-label="delete card"
       :color="props.color"
       class="rounded-r-xl"
       @click="deleteCard"
