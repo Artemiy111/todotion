@@ -4,7 +4,7 @@
       class="flex h-12 items-center gap-2 rounded-xl bg-slate-50 px-3 focus-within:bg-slate-100 dark:bg-slate-800 dark:focus-within:bg-slate-700"
     >
       <input
-        title="row completed status"
+        aria-label="row completed status"
         type="checkbox"
         class="cursor-pointer"
         :checked="props.row.isCompleted"
@@ -12,12 +12,12 @@
       />
       <input
         ref="inputRef"
-        title="row text"
+        aria-label="row text"
         type="text"
         class="h-full w-full bg-inherit outline-none"
         :placeholder="props.placeholder"
         :value="props.row.text"
-        @input="handleInput"
+        @input="updateText"
         @keydown.enter="handleEnter"
         @keydown.backspace="handleBackspace"
         @keydown.delete="handleDelete"
@@ -34,6 +34,7 @@
 import type { TodoRow, RowCreate, RowUpdate } from '~/types'
 
 import { useKeyModifier } from '@vueuse/core'
+import { getInputParams, getInputSelectionParams } from '~/helpers/getInputSelectionParams'
 
 const ctrl = useKeyModifier('Control')
 const alt = useKeyModifier('Alt')
@@ -79,49 +80,13 @@ const handleCheckbox = (event: Event) => {
   emit('update', props.row.id, { isCompleted: newIsCompleted })
 }
 
-const getInputParams = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const text = target.value
-  const isEmpty = text.length === 0
-
-  return { target, text, isEmpty }
-}
-
-const getSelectionParams = (event: Event) => {
-  const { target, text, isEmpty } = getInputParams(event)
-  const start = target.selectionStart as number
-  const end = target.selectionEnd as number
-
-  const leftText = text.slice(0, start)
-  const selectedText = text.slice(start, end)
-  const rightText = text.slice(end, text.length)
-
-  const isPoint = start === end
-  const isStart = start === 0
-  const isEnd = end === text.length
-
-  return {
-    target,
-    text,
-    start,
-    end,
-    leftText,
-    selectedText,
-    rightText,
-    isPoint,
-    isEmpty,
-    isStart,
-    isEnd,
-  }
-}
-
-const handleInput = (event: Event) => {
+const updateText = (event: Event) => {
   const { text } = getInputParams(event)
   emit('update', props.row.id, { text })
 }
 
 const handleEnter = (event: KeyboardEvent) => {
-  const { leftText, rightText, isPoint, isEnd } = getSelectionParams(event)
+  const { leftText, rightText, isPoint, isEnd } = getInputSelectionParams(event)
 
   if (ctrl.value) {
     emit('update', props.row.id, { isCompleted: !props.row.isCompleted })
@@ -157,7 +122,7 @@ const handleEnter = (event: KeyboardEvent) => {
 }
 
 const handleBackspace = (event: KeyboardEvent) => {
-  const { text, isPoint, isEmpty, isStart } = getSelectionParams(event)
+  const { text, isPoint, isEmpty, isStart } = getInputSelectionParams(event)
 
   if (!props.prevRow) return
 
@@ -174,7 +139,7 @@ const handleBackspace = (event: KeyboardEvent) => {
 const handleDelete = (event: KeyboardEvent) => {
   if (event.code !== 'Delete') return
 
-  const { text, isPoint, isEnd } = getSelectionParams(event)
+  const { text, isPoint, isEnd } = getInputSelectionParams(event)
 
   if (isPoint && isEnd && props.nextRow) {
     emit('update-and-delete', props.row.id, { text: text + props.nextRow.text }, props.nextRow.id)
@@ -201,7 +166,7 @@ const checkArrow = (event: KeyboardEvent) => {
 const handleArrowsVertical = (event: KeyboardEvent) => {
   event.preventDefault()
   const { isArrowUp, isArrowDown } = checkArrow(event)
-  const { start } = getSelectionParams(event)
+  const { start } = getInputSelectionParams(event)
 
   if (alt.value) {
     if (isArrowUp && props.prevRow) emit('update', props.row.id, { order: props.row.order - 1 })
@@ -221,7 +186,7 @@ const handleArrowsVertical = (event: KeyboardEvent) => {
 
 const handleArrowsHorizontal = (event: KeyboardEvent) => {
   const { isArrowLeft, isArrowRight } = checkArrow(event)
-  const { isPoint, isStart, isEnd } = getSelectionParams(event)
+  const { isPoint, isStart, isEnd } = getInputSelectionParams(event)
 
   if (isPoint) {
     if (isStart && isArrowLeft && props.prevRow) {

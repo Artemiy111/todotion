@@ -111,7 +111,7 @@ const updateRow = async (
 ): Promise<TodoRow> => {
   try {
     const row = await store.updateOne(rowId, data)
-    if (typeof data.order === 'number' || needFocus) await focusRow(row.id, cursorPlace)
+    if (typeof data.order === 'number' && needFocus) await focusRow(row.id, cursorPlace)
 
     return row
   } catch (e) {

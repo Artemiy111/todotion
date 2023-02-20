@@ -17,20 +17,18 @@
       <span class="text-lg font-medium">Инструкция</span>
       <li class="flex flex-row flex-wrap gap-x-7 gap-y-3">
         <span class="whitespace-nowrap"
-          ><AppPopupGuideKey>Shift</AppPopupGuideKey> +
-          <AppPopupGuideKey>Enter</AppPopupGuideKey></span
+          ><AppPopupGuideKey text="Ctrl" /> + <AppPopupGuideKey text="Enter" /></span
         ><span>Переключить отметку о выполнении</span>
       </li>
       <li class="flex flex-row flex-wrap gap-x-7 gap-y-3">
         <span class="whitespace-nowrap"
-          ><AppPopupGuideKey>ArrowUp</AppPopupGuideKey> /
-          <AppPopupGuideKey>ArrowDown</AppPopupGuideKey></span
+          ><AppPopupGuideKey text="ArrowUp" /> / <AppPopupGuideKey text="ArrowDown" /></span
         ><span>Перемещение по строкам</span>
       </li>
       <li class="flex flex-row flex-wrap gap-x-7 gap-y-3">
         <span class="whitespace-nowrap"
-          ><AppPopupGuideKey>Alt</AppPopupGuideKey> + <AppPopupGuideKey>ArrowUp</AppPopupGuideKey> /
-          <AppPopupGuideKey>ArrowDown</AppPopupGuideKey></span
+          ><AppPopupGuideKey text="Alt" /> + <AppPopupGuideKey text="ArrowUp" /> /
+          <AppPopupGuideKey text="ArrowDown" /></span
         ><span>Перемещение строки вверх / вниз</span>
       </li>
     </ul>

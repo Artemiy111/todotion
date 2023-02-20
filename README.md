@@ -19,4 +19,16 @@
 
 ## Баги
 
-- Ошибка при быстром удалении множества элементов
+- Ошибки при большом количестве действий за малое время
+
+## Запуск
+
+```sh
+npm install
+
+echo DATABASE_URL=your_path_to_postgres_db >> .env
+prisma generate
+prisma db push
+
+npm run dev
+```
