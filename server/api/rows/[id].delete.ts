@@ -1,7 +1,7 @@
 import prisma, { type TodoRow } from '~/server/db/prisma'
 
 export default defineEventHandler(async (event): Promise<TodoRow> => {
-  const id = event.context.params.id as string
+  const id = event.context.params?.id as string
 
   const row = await prisma.todoRow.findUniqueOrThrow({ where: { id } })
 

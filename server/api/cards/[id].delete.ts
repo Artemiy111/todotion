@@ -1,7 +1,7 @@
 import prisma, { type TodoCard } from '~/server/db/prisma'
 
 export default defineEventHandler(async (event): Promise<TodoCard> => {
-  const id = event.context.params.id as string
+  const id = event.context.params?.id as string
 
   try {
     const card = await prisma.todoCard.findUniqueOrThrow({ where: { id } })
