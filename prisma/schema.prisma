@@ -8,25 +8,25 @@ datasource db {
 }
 
 model TodoCard {
-  id        String    @id @default(uuid()) @db.Uuid
+  id        String    @id @db.Uuid
   title     String
-  order     Int
-  color     String    @default("slate")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  order     Int
+  color     String    @default("slate")
   todoRows  TodoRow[]
 
   @@unique([id, order])
 }
 
 model TodoRow {
-  id          String   @id @default(uuid()) @db.Uuid
-  order       Int
+  id          String   @id @db.Uuid
   text        String   @default("")
   isCompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   todoCardId  String   @db.Uuid
+  order       Int
   todoCard    TodoCard @relation(fields: [todoCardId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([id, order])
