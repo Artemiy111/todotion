@@ -38,21 +38,30 @@ export const useRowsStore = defineStore('rows', () => {
       if (typeof body.order === 'number') {
         if (body.order > row.order) {
           rows.value = rows.value.map(c => {
-            return c.order > row.order && c.order <= (body.order as number)
-              ? { ...c, order: c.order - 1 }
-              : c
+            if (c.order > row.order && c.order <= (body.order as number))
+              return {
+                ...c,
+                order: c.order - 1,
+                updatedAt: new Date().toISOString() as unknown as Date,
+              }
+            return c
           })
         } else if (body.order < row.order) {
           rows.value = rows.value.map(c => {
-            return c.order >= (body.order as number) && c.order < row.order
-              ? { ...c, order: c.order + 1 }
-              : c
+            if (c.order >= (body.order as number) && c.order < row.order)
+              return {
+                ...c,
+                order: c.order + 1,
+                updatedAt: new Date().toISOString() as unknown as Date,
+              }
+            return c
           })
         }
       }
 
       rows.value = rows.value.map(card => {
-        if (card.id === id) return { ...card, ...body }
+        if (card.id === id)
+          return { ...card, ...body, updatedAt: new Date().toISOString() as unknown as Date }
         return card
       })
     }
@@ -72,7 +81,11 @@ export const useRowsStore = defineStore('rows', () => {
 
     const tryOptimisticDelete = () => {
       const row = getOne(id)
-      rows.value = rows.value.map(r => (r.order > row.order ? { ...r, order: r.order - 1 } : r))
+      rows.value = rows.value.map(r =>
+        r.order > row.order
+          ? { ...r, order: r.order - 1, updatedAt: new Date().toISOString() as unknown as Date }
+          : r
+      )
       rows.value = rows.value.filter(c => c.id !== id)
     }
     tryOptimisticDelete()

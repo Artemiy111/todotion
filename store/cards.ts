@@ -40,21 +40,31 @@ export const useCardsStore = defineStore('cards', () => {
       if (typeof body.order === 'number') {
         if (body.order > card.order) {
           cards.value = cards.value.map(c => {
-            return c.order > card.order && c.order <= (body.order as number)
-              ? { ...c, order: c.order - 1 }
-              : c
+            if (c.order > card.order && c.order <= (body.order as number))
+              return {
+                ...c,
+                order: c.order - 1,
+                updatedAt: new Date().toISOString() as unknown as Date,
+              }
+
+            return c
           })
         } else if (body.order < card.order) {
           cards.value = cards.value.map(c => {
-            return c.order >= (body.order as number) && c.order < card.order
-              ? { ...c, order: c.order + 1 }
-              : c
+            if (c.order >= (body.order as number) && c.order < card.order)
+              return {
+                ...c,
+                order: c.order + 1,
+                updatedAt: new Date().toISOString() as unknown as Date,
+              }
+            return c
           })
         }
       }
 
       cards.value = cards.value.map(card => {
-        if (card.id === id) return { ...card, ...body }
+        if (card.id === id)
+          return { ...card, ...body, updatedAt: new Date().toISOString() as unknown as Date }
         return card
       })
     }
@@ -74,7 +84,11 @@ export const useCardsStore = defineStore('cards', () => {
 
     const tryOptimisticDelete = () => {
       const card = getOne(id)
-      cards.value = cards.value.map(c => (c.order > card.order ? { ...c, order: c.order - 1 } : c))
+      cards.value = cards.value.map(c =>
+        c.order > card.order
+          ? { ...c, order: c.order - 1, updatedAt: new Date().toISOString() as unknown as Date }
+          : c
+      )
       cards.value = cards.value.filter(c => c.id !== id)
     }
     tryOptimisticDelete()
